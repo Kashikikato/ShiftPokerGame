@@ -6,9 +6,9 @@ package entity
  */
 enum class CardSuit {
     CLUBS,
-    SPADES,
-    HEARTS,
     DIAMONDS,
+    HEARTS,
+    SPADES
     ;
 
     /**
@@ -17,9 +17,9 @@ enum class CardSuit {
      */
     override fun toString() = when(this) {
         CLUBS -> "♣"
-        SPADES -> "♠"
-        HEARTS -> "♥"
         DIAMONDS -> "♦"
+        HEARTS -> "♥"
+        SPADES -> "♠"
     }
 
 

@@ -7,7 +7,6 @@ package entity
  */
 data class Card(val suit: CardSuit, val value: CardValue) : Comparable<Card> {
     override fun toString() = "$suit$value"
-
     override fun compareTo(other: Card): Int {
         val thisValue = this.value.ordinal
         val otherValue = other.value.ordinal

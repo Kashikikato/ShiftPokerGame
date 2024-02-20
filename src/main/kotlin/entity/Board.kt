@@ -1,5 +1,4 @@
 package entity
-
 class Board (
     val discardPileLeft : Card? = null,
     val discardPileRight : Card? = null,
