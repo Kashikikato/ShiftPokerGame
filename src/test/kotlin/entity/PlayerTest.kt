@@ -3,8 +3,8 @@ import kotlin.test.*
 
 class PlayerTest {
     // create 2 players to test with
-    private val player1 = Player("Player 1", false, mutableListOf(), mutableListOf())
-    private val player2 = Player("Player 2", false, mutableListOf(), mutableListOf())
+    private val player1 = Player("Player 1")
+    private val player2 = Player("Player 2")
 
     /**
      * Check if the names of the players are unique.

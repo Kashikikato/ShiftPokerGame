@@ -3,7 +3,7 @@ import kotlin.test.*
 
 class BoardTest {
     // create a board to test with
-    private val board = Board(null, null, mutableListOf(), mutableListOf())
+    private val board = Board()
 
     /**
      * Check if all piles are empty.

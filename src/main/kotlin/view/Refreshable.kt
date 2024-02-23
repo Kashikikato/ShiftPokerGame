@@ -1,5 +1,6 @@
 package view
 import entity.*
+import service.AbstractRefreshingService
 
 /**
  * This interface provides a mechanism for the service layer classes to communicate

@@ -6,9 +6,6 @@ package entity
  * It is characterized by a [CardSuit] and a [CardValue]
  */
 data class Card(val suit: CardSuit, val value: CardValue) : Comparable<Card> {
-
-    private val cardDeck: ArrayDeque<Card> = ArrayDeque(52)
-
     override fun toString() = "$suit$value"
     override fun compareTo(other: Card): Int {
         val thisValue = this.value.ordinal

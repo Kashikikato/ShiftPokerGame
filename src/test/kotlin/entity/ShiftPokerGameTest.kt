@@ -3,9 +3,7 @@ import kotlin.test.*
 
 class ShiftPokerGameTest {
     //create game to test with
-    private val players = MutableList(2) {Player("Player ${it + 1}",false, mutableListOf(), mutableListOf())}
-    private val board = Board(null, null, mutableListOf() , mutableListOf())
-    private val game = ShiftPokerGame(players, board, 0, 2)
+    private val game = ShiftPokerGame()
 
     /**
      * Check if the number of rounds is set correctly.
