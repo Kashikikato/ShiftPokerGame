@@ -15,6 +15,4 @@ class BoardTest {
         assertTrue(board.middleCards.isEmpty())
         assertTrue(board.drawPile.isEmpty())
     }
-
-
 }
