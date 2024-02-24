@@ -7,7 +7,7 @@ class PlayerTest {
     private val player2 = Player("Player 2")
 
     /**
-     * Check if the names of the players are unique.
+     * Checks if the names of the players are unique.
      */
     @Test
     fun testPlayerNamesEquality() {
@@ -15,7 +15,7 @@ class PlayerTest {
     }
 
     /**
-     * Check if initial attributes are set correctly. Verify that hasShifted is false and the player's hand is empty.
+     * Checks if initial attributes are set correctly. Verify that hasShifted is false and the player's hand is empty.
      */
     @Test
     fun testInitialPlayerAttributes()  {

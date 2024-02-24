@@ -17,7 +17,7 @@ class CardTest {
     private val clubsChar = '\u2663' // ♣
 
     /**
-     * Check if to String produces the correct strings for some test cards
+     * Checks if to String produces the correct strings for some test cards
      * of all four suits.
      */
     @Test
@@ -29,7 +29,7 @@ class CardTest {
     }
 
     /**
-     * Check if toString produces a 2 character string for every possible card
+     * Checks if toString produces a 2 character string for every possible card
      * except the 10 (for which length=3 is ensured)
      */
     @Test
@@ -45,7 +45,7 @@ class CardTest {
     }
 
     /**
-     * Check with a few examples if the order introduced by [Card.compareTo] allows
+     * Checks with a few examples if the order introduced by [Card.compareTo] allows
      * to directly compare the value of two cards like `card1 > card2`.
      */
     @Test
@@ -57,7 +57,7 @@ class CardTest {
     }
 
     /**
-     * Check if two cards with the same CardSuit/CardValue combination are equal
+     * Checks if two cards with the same CardSuit/CardValue combination are equal
      * in the sense of the `==` operator, but not the same in the sense of
      * the `===` operator.
      */

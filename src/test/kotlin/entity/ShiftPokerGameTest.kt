@@ -6,7 +6,7 @@ class ShiftPokerGameTest {
     private val game = ShiftPokerGame()
 
     /**
-     * Check if the number of rounds is set correctly.
+     * Checks if the number of rounds is set correctly.
      */
     @Test
     fun testRoundsInBounds() {
@@ -15,7 +15,7 @@ class ShiftPokerGameTest {
     }
 
     /**
-     * Check if the current player is set correctly.
+     * Checks if the current player is set correctly.
      */
     @Test
     fun testCurrentPLayerInBounds() {
@@ -24,7 +24,7 @@ class ShiftPokerGameTest {
     }
 
     /**
-     * Check if initial number of players is set to 2.
+     * Checks if initial number of players is set to 2.
      */
     @Test
     fun testInitialNumberPlayers() {

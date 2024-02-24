@@ -6,7 +6,7 @@ class BoardTest {
     private val board = Board()
 
     /**
-     * Check if all piles are empty.
+     * Checks if all piles are empty.
      */
     @Test
     fun testPilesEmpty() {
