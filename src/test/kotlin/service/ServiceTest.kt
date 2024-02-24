@@ -202,9 +202,9 @@ class ServiceTest {
 
     /**
      * tests the calcResult() method and its utility methods. Note that the results are being sorted manually in
-     * the test method. The results are not sorted by ranking (yet), and the order of the players was shuffled in startGame().
-     * Without sorting the players by name here, it would not be possible to assign the hands to the respective players
-     * without messing up the names. Ideally, this will be improved.
+     * the test method. The results are not sorted by ranking (yet), and the order of the players was
+     * shuffled in startGame(). Without sorting the players by name here, it would not be possible to
+     * assign the hands to the respective player without messing up the names. Ideally, this will be improved.
      */
     @Test
     fun testCalcResult() {
@@ -295,13 +295,8 @@ class ServiceTest {
         var handEvaluation = mc.pokerGameService.evaluateHand(hand)
         assertEquals("Royal Flush", handEvaluation)
 
-        hand = mutableListOf(
-            Card(CardSuit.HEARTS, CardValue.TEN),
-            Card(CardSuit.HEARTS, CardValue.JACK),
-            Card(CardSuit.HEARTS, CardValue.QUEEN),
-            Card(CardSuit.HEARTS, CardValue.KING),
-            Card(CardSuit.HEARTS, CardValue.NINE)
-        )
+        hand[4] = Card(CardSuit.HEARTS, CardValue.NINE)
+
         handEvaluation = mc.pokerGameService.evaluateHand(hand)
         assertEquals("Straight Flush", handEvaluation)
 
@@ -338,24 +333,13 @@ class ServiceTest {
         assertEquals("Flush", handEvaluation)
 
 
-        hand = mutableListOf(
-            Card(CardSuit.CLUBS, CardValue.QUEEN),
-            Card(CardSuit.HEARTS, CardValue.JACK),
-            Card(CardSuit.CLUBS, CardValue.TEN),
-            Card(CardSuit.CLUBS, CardValue.NINE),
-            Card(CardSuit.CLUBS, CardValue.EIGHT)
-        )
+        hand[1] = Card(CardSuit.HEARTS, CardValue.JACK)
 
         handEvaluation = mc.pokerGameService.evaluateHand(hand)
         assertEquals("Straight", handEvaluation)
 
-        hand = mutableListOf(
-            Card(CardSuit.CLUBS, CardValue.QUEEN),
-            Card(CardSuit.DIAMONDS, CardValue.QUEEN),
-            Card(CardSuit.HEARTS, CardValue.QUEEN),
-            Card(CardSuit.CLUBS, CardValue.NINE),
-            Card(CardSuit.CLUBS, CardValue.EIGHT)
-        )
+        hand[1] = Card(CardSuit.DIAMONDS, CardValue.QUEEN)
+        hand[2] = Card(CardSuit.HEARTS, CardValue.QUEEN)
 
         handEvaluation = mc.pokerGameService.evaluateHand(hand)
         assertEquals("Three of a Kind", handEvaluation)
