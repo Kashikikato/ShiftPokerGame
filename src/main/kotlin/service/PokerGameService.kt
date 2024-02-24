@@ -256,7 +256,7 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      *
      * @return true if the player has a "Royal Flush", else return false.
      */
-    fun hasRoyalFlush(hand: List<Card>): Boolean {
+    private fun hasRoyalFlush(hand: List<Card>): Boolean {
         return hasStraightFlush(hand) && hand.any { it.value == CardValue.ACE }
     }
     /**

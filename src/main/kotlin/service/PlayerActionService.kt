@@ -92,7 +92,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * @param middleIndex the index of the middle card to be swapped
      *
      *  @throws IllegalStateException if [ShiftPokerGame] has not started yet or already ended.
-     *  @throws IndexOutOfBoundsException if the index of either the middle card or the hand card is out of bounds
+     *  @throws IllegalStateException if the index of either the middle card or the hand card is out of bounds
      */
     fun swap(handIndex: Int, middleIndex: Int) {
         //retrieve current game state
@@ -101,7 +101,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
         //check if indices are in bounds
         if (handIndex !in 0..2 || middleIndex !in 0..2) {
-            throw IndexOutOfBoundsException()
+            throw IllegalStateException()
         }
 
         if (!player.hasShifted) {

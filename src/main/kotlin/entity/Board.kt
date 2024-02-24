@@ -8,7 +8,7 @@ package entity
  * @property discardPileLeft holds the discard pile on the left side of the middle cards
  * @property discardPileRight holds the discard pile on the right side of the middle cards
  */
-class Board() {
+class Board {
     var middleCards: MutableList<Card> = mutableListOf()
     var drawPile: MutableList<Card> = mutableListOf()
     var discardPileLeft: Card? = null
