@@ -26,7 +26,7 @@ interface Refreshable {
      * @param shiftingPlayer the player that shifted the middle cards
      * @param boardCards the cards on the board after the player shifted the middle cards
      */
-    fun refreshAfterShiftCards(shiftingPlayer: Player, boardCards: Board) {}
+    fun refreshAfterShiftCard(shiftingPlayer: Player, boardCards: Board) {}
 
     /**
      * perform refreshes that are necessary after a player swapped a card from their

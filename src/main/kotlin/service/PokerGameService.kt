@@ -16,9 +16,14 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      * @param players a list of the players in the game. Set to "Player 1" and "Player 2" by default.
      * @param rounds the number of rounds to be played. Set to "2" by default.
      *
+     * @throws IllegalArgumentException if the size of [players] or the number of [rounds] are not in bounds.
      */
-    fun startGame(players: MutableList<String> = mutableListOf("Player 1", "Player 2"), rounds: Int = 2){
+    fun startGame(players: List<String> = mutableListOf("Player 1", "Player 2"), rounds: Int = 2){
 
+        // check if number of players and rounds are set correctly
+        if(players.size !in 2..4 || rounds !in 2..7){
+            throw IllegalArgumentException()
+        }
         // check if no game has started yet
         if(rootService.currentGame == null) {
             rootService.currentGame = ShiftPokerGame()
@@ -26,16 +31,10 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
 
         val game = rootService.currentGame
 
-        // check if number of players and rounds are set correctly
-        if(players.size !in 2..4 || rounds !in 2..7){
-            throw IllegalArgumentException()
-        }
-
         if (game != null) {
             game.rounds = rounds
             // shuffle the order of the players to randomize first player
-            game.players.shuffle()
-
+            game.players = players.map { Player(it) }.shuffled().toMutableList()
             // empty discard piles
             game.board.discardPileLeft = null
             game.board.discardPileRight = null
@@ -83,6 +82,8 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      * number of rounds to be played by checking if the last player has played their turn, in which case
      * the first player is next to play their turn. In the case of this being the last turn of the last round,
      * the method calls calcResult().
+     *
+     * @throws IllegalStateException if [ShiftPokerGame] has not started yet or already ended.
      */
     fun nextPlayer() {
         // retrieve current game state
@@ -95,7 +96,9 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
                 //set the first player to play the next turn
                 game.currentPlayer = 0
                 game.rounds--
-            } else calcResult()
+            }
+            else endGame()
+            onAllRefreshables { refreshAfterNextPlayer(game.players[game.currentPlayer]) }
         }
         else {
             // check if there are rounds to be played
@@ -105,17 +108,22 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
             // increase currentPlayer by 1 regardless of the number of rounds to be played
             game.currentPlayer++
         }
-        onAllRefreshables { refreshAfterNextPlayer(game.players[game.currentPlayer-1]) }
+        game.players[game.currentPlayer].hasShifted = false
+
+        if(game.currentPlayer > 0) onAllRefreshables { refreshAfterNextPlayer(game.players[game.currentPlayer-1]) }
+        else onAllRefreshables { refreshAfterNextPlayer(game.players[game.currentPlayer]) }
     }
 
     /**
-     * This method ends the game if it has not ended yet.
+     * This method ends the game if it has started but not ended yet.
+     *
+     * @throws IllegalStateException if [ShiftPokerGame] has not started yet or already ended.
      */
     fun endGame() {
-        // check if game has already ended
-        checkNotNull(rootService.currentGame)
+        // check if game has not started yet or already ended
+        checkNotNull(rootService.currentGame) {"Game has not started yet or already ended"}
         // end game if it has not already
-        rootService.currentGame = null
+        calcResult()
 
         onAllRefreshables { refreshAfterGameEnd(calcResult()) }
     }
@@ -124,8 +132,10 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      * This method calculates the result of the game after the last round has been played.
      *
      * @return the result as a map of the players and their respective poker hands.
+     *
+     * @throws IllegalStateException if [ShiftPokerGame] has not started yet or already ended.
      */
-    private fun calcResult(): Map<Player,String> {
+    fun calcResult(): Map<Player,String> {
         val game = checkNotNull(rootService.currentGame)
         val scoreboard = mutableMapOf<Player, String>()
 
@@ -137,9 +147,44 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
 
             scoreboard[player] = pokerHand
         }
-
         return scoreboard
     }
+
+//    /**
+//     * This method sorts the scoreboard according to value of the respective hands of the players.
+//     * It uses the compareHands() method to do so.
+//     *
+//     * @param scoreboard the scoreboard to be sorted.
+//     */
+//    private fun sortScoreboard(scoreboard: Map<Player,String>): Map<Player,String> {
+//        return scoreboard.toList()
+//            .sortedBy { compareHands(it.second, scoreboard.values.maxOrNull()!!) }
+//            .toMap()
+//    }
+//
+//    /**
+//     * This method compares two hands with one another based on the "Poker" hand value. It uses
+//     * the abstract function indexOf() to determine the index of the "Poker" hand in a list contains
+//     * all "Poker" hands sorted by value. The lower the index, the higher the value of the hand.
+//     *
+//     * @param hand1 the first hand
+//     * @param hand2 the second hand to compare to the first hand
+//     *
+//     * @return the integer 1, if the first hand is more valuable, 0 if the hands are
+//     * equally valuable, and -1 if the second hand is more valuable
+//     */
+//    private fun compareHands(hand1: String, hand2: String): Int {
+//        val handRankings = listOf(
+//            "Royal Flush", "Straight Flush", "Four of a Kind", "Full House", "Flush",
+//            "Straight", "Three of a Kind", "Two Pair", "One Pair", "High Card"
+//        )
+//
+//        val rank1 = handRankings.indexOf(hand1)
+//        val rank2 = handRankings.indexOf(hand2)
+//
+//        return rank1.compareTo(rank2)
+//    }
+//
 
     /**
      * This method evaluates the hand of a player based on the rules of "Poker".
@@ -149,18 +194,18 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      * @return the evaluated "Poker" hand as a String.
      * @return "unknown" if evaluation fails.
      */
-    private fun evaluateHand(hand: List<Card>): String {
+    fun evaluateHand(hand: List<Card>): String {
 
-        val pokerHands = listOf(
+        val pokerHands = mutableListOf(
             "Royal Flush",
             "Straight Flush",
-            "4 of a Kind",
+            "Four of a Kind",
             "Full House",
             "Flush",
             "Straight",
-            "3 of a Kind",
-            "2 Pair",
-            "1 Pair",
+            "Three of a Kind",
+            "Two Pair",
+            "Pair",
             "High Card"
             )
 
@@ -193,8 +238,8 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
             "Flush" -> return hasFlush(hand)
             "Straight" -> return hasStraight(hand)
             "Three of a Kind" -> return hasThreeOfAKind(hand)
-            "Two Pair" -> return hasTwoPairs(hand)
-            "One Pair" -> return hasPair(hand)
+            "Two Pair" -> return hasTwoPair(hand)
+            "Pair" -> return hasPair(hand)
             "High Card" -> return true // every hand has a high card
         }
         return false
@@ -211,10 +256,9 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      *
      * @return true if the player has a "Royal Flush", else return false.
      */
-    private fun hasRoyalFlush(hand: List<Card>): Boolean {
-            return hasStraightFlush(hand) && hand[4].value.ordinal == 12
+    fun hasRoyalFlush(hand: List<Card>): Boolean {
+        return hasStraightFlush(hand) && hand.any { it.value == CardValue.ACE }
     }
-
     /**
      * Determines whether the given hand contains a "Straight Flush". Therefore, checks whether the player
      * has a "Straight" and a "Flush" by calling the respective methods. In combination, this represents
@@ -235,7 +279,7 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      * consist of the same values.
      *
      * Note that "2 Pairs" generally means that the two pairs are not equal by value.
-     * The method hasTwoPairs() ignores this for the purpose of detecting a "4 of a Kind".
+     * The method hasTwoPair() ignores this for the purpose of detecting a "4 of a Kind".
      * Since evaluateHand checks for "4 of a Kind" first, this should not cause any problems
      * such as returning a "2 Pairs" hand when there are "4 of a Kind".
      *
@@ -244,7 +288,7 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      * @return true if the player has "4 of a Kind", else return false.
      */
     private fun hasFourOfAKind(hand: List<Card>): Boolean {
-        return hasThreeOfAKind(hand) && hasTwoPairs(hand) && !hasFullHouse(hand)
+        return hasThreeOfAKind(hand) && hasTwoPair(hand) && !hasFullHouse(hand)
     }
 
     /**
@@ -288,8 +332,11 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      * @return true if the hand contains a "Straight", else return false.
      */
     private fun hasStraight(hand: List<Card>): Boolean {
-        for(i in 0 until hand.size-1) {
-            if(hand[i+1].value.ordinal - hand[i].value.ordinal != 1) {
+        //sort the cards based on their value
+        val sortedHand = hand.sortedBy{it.value.ordinal}
+
+        for(i in 0 until sortedHand.size-1) {
+            if(sortedHand[i+1].value.ordinal - sortedHand[i].value.ordinal != 1) {
                 return false
             }
         }
@@ -315,6 +362,9 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
             if(count >= 3) {
                 return true
             }
+            else {
+                count = 0
+            }
         }
         return false
     }
@@ -330,39 +380,44 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      * @return true, if the hand contains "2 Pairs", else return false.
      */
 
-    private fun hasTwoPairs(hand: List<Card>): Boolean {
-
-        if(!hasPair(hand)) return false
-        val pairs = mutableListOf<Card>()
-        for(card in hand) {
-            for(otherCard in hand) {
-                if(card.value.ordinal == otherCard.value.ordinal) {
-                    if(!pairs.contains(card)) {
-                        pairs.add(card)
-                    }
-                    if(!pairs.contains(otherCard)) {
-                        pairs.add(otherCard)
-                    }
+    private fun hasTwoPair(hand: List<Card>): Boolean {
+        var tempCount = 0
+        var pairCount = 0
+        for (card in hand) {
+            for (otherCard in hand) {
+                if (card.value.ordinal == otherCard.value.ordinal && card.suit.ordinal != otherCard.suit.ordinal) {
+                    tempCount += 1
                 }
             }
+            if (tempCount == 1 || tempCount == 3) {
+                pairCount += 1
+            }
+            tempCount = 0
         }
-        return pairs.size >= 4
+        return pairCount > 2
     }
 
     /**
-     * Determines whether the given hand consists of "One Pair". Therefore, it simply compares the cards in the hand
+     * Determines whether the given hand consists of "Pair". Therefore, it simply compares the cards in the hand
      * with one another and returns true, if two cards are equal in value.
      *
      * @param hand the hand of the player.
      *
-     * @return true if the hand consists of "One Pair", return false otherwise.
+     * @return true if the hand consists of "Pair", return false otherwise.
      */
     private fun hasPair(hand: List<Card>): Boolean {
+        var pairCount = 0
         for(card in hand) {
             for(otherCard in hand) {
                 if(card.value.ordinal == otherCard.value.ordinal && card.suit.ordinal != otherCard.suit.ordinal) {
-                    return true
+                    pairCount += 1
                 }
+            }
+            if(pairCount == 1) {
+                return true
+            }
+            else {
+                pairCount = 0
             }
         }
         return false

@@ -12,9 +12,9 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * and puts it onto the free spot.
      * Afterwards, sets [Player.hasShifted] to `true`.
      *
+     * @throws IllegalStateException if [ShiftPokerGame] has not started yet or already ended.
      * @throws IllegalStateException if [Player] has already shifted the cards.
      *
-     * @throws IllegalStateException if no game has started yet.
      */
     fun shift(left: Boolean) {
         // receive current game state
@@ -25,33 +25,33 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         }
 
         // receive middleCards
-        val gameMiddleCards = game.board.middleCards
+        val middleCards = game.board.middleCards
 
         if (left) {
             // place the left card from middle cards on top of discardPile
-            game.board.discardPileLeft = gameMiddleCards[0]
+            game.board.discardPileLeft = middleCards[0]
 
             // shift middleCards one to the left
-            gameMiddleCards[0] = gameMiddleCards[1]
-            gameMiddleCards[1] = gameMiddleCards[2]
+            middleCards[0] = middleCards[1]
+            middleCards[1] = middleCards[2]
 
             // replace free spot with card from drawPile
-            gameMiddleCards[2] = game.board.drawPile.removeFirst()
+            middleCards[2] = game.board.drawPile.removeFirst()
         } else {
             // place the right card from middle cards on top of discardPile
-            game.board.discardPileRight = gameMiddleCards[2]
+            game.board.discardPileRight = middleCards[2]
 
             // shift middleCards one to the right
-            gameMiddleCards[2] = gameMiddleCards[1]
-            gameMiddleCards[1] = gameMiddleCards[0]
+            middleCards[2] = middleCards[1]
+            middleCards[1] = middleCards[0]
 
             // replace free spot with card from drawPile
-            gameMiddleCards[0] = game.board.drawPile.removeFirst()
+            middleCards[0] = game.board.drawPile.removeFirst()
         }
 
 
         // refresh the GUI
-        onAllRefreshables { refreshAfterShiftCards(player, game.board) }
+        onAllRefreshables { refreshAfterShiftCard(player, game.board) }
 
         // player finished shifting
         player.hasShifted = true
@@ -61,6 +61,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * Swaps all the cards from [Player]'s open cards with the middle cards.
      * Calls nextPlayer() afterward.
      *
+     * @throws IllegalStateException if [ShiftPokerGame] has not started yet or already ended.
      * @throws IllegalStateException if player has not shifted yet.
      */
     fun swapAll() {
@@ -90,7 +91,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
      * @param handIndex the index of the open hand card to be swapped
      * @param middleIndex the index of the middle card to be swapped
      *
-     * @throws IndexOutOfBoundsException if the index of either the middle card or the hand card is out of bounds
+     *  @throws IllegalStateException if [ShiftPokerGame] has not started yet or already ended.
+     *  @throws IndexOutOfBoundsException if the index of either the middle card or the hand card is out of bounds
      */
     fun swap(handIndex: Int, middleIndex: Int) {
         //retrieve current game state
@@ -119,7 +121,8 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
     /**
      * Skips swapping cards and simply calls nextPlayer().
      *
-     * @throws IllegalStateException if the player has not shifted yet.
+     *  @throws IllegalStateException if [ShiftPokerGame] has not started yet or already ended.
+     *  @throws IllegalStateException if the player has not shifted yet.
      */
 
     fun pass() {

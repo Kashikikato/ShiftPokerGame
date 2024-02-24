@@ -19,7 +19,7 @@ class CardImageLoaderTest {
      * A queen of hearts test image that is used to be compared to images
      * loaded with [imageLoader]. Please note that it could be initialized
      * directly, but to showcase the use of the [BeforeTest] annotation, it
-     * is initialized in [loadCompareImage]
+     * is initialized in [loadCompareImage]Act
      */
     private var queenOfHearts : BufferedImage? = null
 

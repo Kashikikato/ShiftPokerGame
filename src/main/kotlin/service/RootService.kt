@@ -10,7 +10,7 @@ import view.Refreshable
 class RootService {
 
     val pokerGameService = PokerGameService(this)
-    private val playerActionService = PlayerActionService(this)
+    val playerActionService = PlayerActionService(this)
 
     /**
      * The currently active game. Can be `null`, if no game has started yet.
@@ -21,7 +21,7 @@ class RootService {
      * Adds the provided [newRefreshable] to all services connected
      * to this root service
      */
-    private fun addRefreshable(newRefreshable: Refreshable) {
+    fun addRefreshable(newRefreshable: Refreshable) {
         pokerGameService.addRefreshable(newRefreshable)
         playerActionService.addRefreshable(newRefreshable)
     }
