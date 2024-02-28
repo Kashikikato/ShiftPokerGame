@@ -18,7 +18,7 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      *
      * @throws IllegalArgumentException if the size of [players] or the number of [rounds] are not in bounds.
      */
-    fun startGame(players: List<String> = mutableListOf("Player 1", "Player 2"), rounds: Int = 2){
+    fun startGame(players: MutableList<String> = mutableListOf("Player 1", "Player 2"), rounds: Int = 2){
 
         // check if number of players and rounds are set correctly
         if(players.size !in 2..4 || rounds !in 2..7){
@@ -43,7 +43,7 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
             game.currentPlayer = 0
 
             // create a deck with 52 cards for the game
-            val cardDeck: ArrayDeque<Card> = ArrayDeque(52)
+            val cardDeck: ArrayDeque<Card> = game.board.cardDeck
 
             // add all cards (all possible combinations of suits and values) to the deck
             for (suit in CardSuit.values()) {
@@ -126,6 +126,8 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
         calcResult()
 
         onAllRefreshables { refreshAfterGameEnd(calcResult()) }
+
+        rootService.currentGame = null // Damit keine weiteren Spielzüge ausgeführt werden können
     }
 
     /**
@@ -300,14 +302,11 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      * @return true if the player has a "Flush", else return false.
      */
     private fun hasFlush(hand: List<Card>): Boolean {
-        for(card in hand) {
-            for(otherCard in hand) {
-                if(card.suit.ordinal != otherCard.suit.ordinal) {
-                    return false
-                }
-            }
-        }
-        return true
+
+        val suits = hand.groupBy { it.suit }
+        val isFlush = suits.size == 1
+
+        return isFlush
     }
 
     /**

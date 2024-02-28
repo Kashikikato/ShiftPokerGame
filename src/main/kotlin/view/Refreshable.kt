@@ -23,26 +23,26 @@ interface Refreshable {
     /**
      * perform refreshes that are necessary after a player shifted the middle cards
      *
-     * @param shiftingPlayer the player that shifted the middle cards
-     * @param boardCards the cards on the board after the player shifted the middle cards
+     * @param left a boolean value indicating the direction of the shift
      */
-    fun refreshAfterShiftCard(shiftingPlayer: Player, boardCards: Board) {}
+    fun refreshAfterShiftCard(left: Boolean) {}
 
     /**
      * perform refreshes that are necessary after a player swapped a card from their
      * open cards with a card from the middle
      *
-     * @param player the player that swapped one card or all cards
-     * @param boardCards the cards on the board after the player swapped one card or all cards
+     * @param middleIndex the index of the middle card to be swapped
+     * @param handIndex the index of the hand card to be swapped
      *
      */
-    fun refreshAfterSwapCard(player: Player, boardCards: Board) {}
+    fun refreshAfterSwapCard(all: Boolean, pass: Boolean, handIndex: Int? = null, middleIndex: Int? = null) {}
 
     /**
      * perform refreshes that are necessary after a player finished their turn
      *
      * @param player the player that finished their turn
      */
+
     fun refreshAfterNextPlayer(player: Player) {}
 
     /**

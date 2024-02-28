@@ -1,6 +1,8 @@
-import view.SopraApplication
+import view.GameApplication
+import view.GameData
 
 fun main() {
-    SopraApplication().show()
-    println("Application ended. Goodbye")
+    GameApplication().show()
+    println("Shift Poker game ended. Goodbye")
+    println(GameData.playerNames.size)
 }

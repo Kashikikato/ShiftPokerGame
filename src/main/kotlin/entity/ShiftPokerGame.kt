@@ -7,7 +7,7 @@ package entity
  * @property currentPlayer index of the [players] list to indicate the current player
  * @property rounds number of rounds to be played, initially set to 2 by default
  */
-class ShiftPokerGame() {
+class ShiftPokerGame {
     var players: MutableList<Player> = mutableListOf(Player("Player 1"), Player("Player 2"))
     val board: Board = Board()
     var currentPlayer: Int = 0

@@ -51,7 +51,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
 
         // refresh the GUI
-        onAllRefreshables { refreshAfterShiftCard(player, game.board) }
+        onAllRefreshables { refreshAfterShiftCard(left) }
 
         // player finished shifting
         player.hasShifted = true
@@ -79,7 +79,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         player.openCards = game.board.middleCards
         game.board.middleCards = temp
 
-        onAllRefreshables { refreshAfterSwapCard(player, game.board) }
+        onAllRefreshables { refreshAfterSwapCard(true, false) }
 
         rootService.pokerGameService.nextPlayer()
     }
@@ -112,7 +112,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         player.openCards[handIndex] = game.board.middleCards[middleIndex]
         game.board.middleCards[middleIndex] = temp
 
-        onAllRefreshables { refreshAfterSwapCard(player, game.board) }
+        onAllRefreshables { refreshAfterSwapCard(false, false, handIndex, middleIndex) }
 
         rootService.pokerGameService.nextPlayer()
     }
