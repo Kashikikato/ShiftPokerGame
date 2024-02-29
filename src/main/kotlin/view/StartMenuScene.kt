@@ -7,18 +7,20 @@ import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import java.awt.Color
 
-class StartMenuScene(private val rootService: RootService): MenuScene(600, 800, ColorVisual.LIGHT_GRAY), Refreshable {
+class StartMenuScene(private val rootService: RootService): MenuScene(
+    600, 800, ColorVisual.LIGHT_GRAY), Refreshable {
+
     private val headlineLabel = Label(
         width = 550, height = 50, posX = 30, posY = 50,
-        text = "Welcome to Shift Poker!",
-        font = Font(size = 30, color = Color.WHITE, family = "Times New Roman", fontWeight = Font.FontWeight.BOLD)
+        text = "WELCOME TO SHIFT POKER!",
+        font = Font(size = 32, color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     )
 
     private val roundLabel = Label(
         width = 80, height = 35,
         posX = 160, posY = 125,
-        text = "Rounds: ",
-        font = Font(fontWeight = Font.FontWeight.BOLD)
+        text = "ROUNDS: ",
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
 
     )
     private var rounds = 2
@@ -41,7 +43,7 @@ class StartMenuScene(private val rootService: RootService): MenuScene(600, 800, 
         width = 30, height = 25,
         posX = 250, posY = 130,
         text = rounds.toString(),
-        font = Font(fontWeight = Font.FontWeight.BOLD, color = Color.WHITE)
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     )
 
     private fun onRoundsSelected(rounds: Int) {
@@ -81,8 +83,8 @@ class StartMenuScene(private val rootService: RootService): MenuScene(600, 800, 
     private val playersLabel = Label(
         width = 80, height = 35,
         posX = 158, posY = 175,
-        text = "Players:",
-        font = Font(fontWeight = Font.FontWeight.BOLD)
+        text = "PLAYERS:",
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     )
 
     private val numPlayersInput: ComboBox<Int> = ComboBox(
@@ -103,14 +105,14 @@ class StartMenuScene(private val rootService: RootService): MenuScene(600, 800, 
         width = 30, height = 25,
         posX = 250, posY = 180,
         text = numPlayers.toString(),
-        font = Font(fontWeight = Font.FontWeight.BOLD, color = Color.WHITE)
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     )
 
     private val p1Label = Label(
         width = 100, height = 35,
         posX = 150, posY = 225,
-        text = "Player 1:",
-        font = Font(fontWeight = Font.FontWeight.BOLD)
+        text = "PLAYER 1:",
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     )
     private val p1Input: TextField = TextField(
         width = 200, height = 35,
@@ -125,8 +127,8 @@ class StartMenuScene(private val rootService: RootService): MenuScene(600, 800, 
     private val p2Label = Label(
         width = 100, height = 35,
         posX = 150, posY = 275,
-        text = "Player 2:",
-        font = Font(fontWeight = Font.FontWeight.BOLD)
+        text = "PLAYER 2:",
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     )
 
     private val p2Input: TextField = TextField(
@@ -142,8 +144,8 @@ class StartMenuScene(private val rootService: RootService): MenuScene(600, 800, 
     private val p3Label = Label(
         width = 100, height = 35,
         posX = 150, posY = 325,
-        text = "Player 3:",
-        font = Font(fontWeight = Font.FontWeight.BOLD)
+        text = "PLAYER 3:",
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     ).apply { this.isVisible = false }
 
     private val p3Input: TextField = TextField(
@@ -160,8 +162,8 @@ class StartMenuScene(private val rootService: RootService): MenuScene(600, 800, 
     private val p4Label = Label(
         width = 100, height = 35,
         posX = 150, posY = 375,
-        text = "Player 4:",
-        font = Font(fontWeight = Font.FontWeight.BOLD)
+        text = "PLAYER 4:",
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     ).apply { this.isVisible = false }
 
     private val p4Input: TextField = TextField(
@@ -178,17 +180,19 @@ class StartMenuScene(private val rootService: RootService): MenuScene(600, 800, 
     val quitButton = Button(
         width = 140, height = 35,
         posX = 150, posY = 325,
-        text = "Quit"
+        text = "QUIT",
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     ).apply {
-        visual = ColorVisual(221, 136, 136)
+        visual = ColorVisual(150, 50, 50)
     }
 
     private val startButton = Button(
         width = 140, height = 35,
         posX = 310, posY = 325,
-        text = "Start"
+        text = "START",
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     ).apply {
-        visual = ColorVisual(136, 221, 136)
+        visual = ColorVisual(50, 120, 50)
         onMouseClicked = {
             val p1 = p1Input.text.trim()
             val p2 = p2Input.text.trim()
@@ -206,7 +210,8 @@ class StartMenuScene(private val rootService: RootService): MenuScene(600, 800, 
     }
 
     init {
-        opacity = .5
+        background = ColorVisual(50, 70, 50) // Dark green for "Casino table" flair
+        opacity = .9
         addComponents(
             headlineLabel,
             roundLabel, roundList, numRoundsLabel,

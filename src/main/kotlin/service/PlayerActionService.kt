@@ -81,7 +81,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
         onAllRefreshables { refreshAfterSwapCard(true, false) }
 
-        rootService.pokerGameService.nextPlayer()
+//        rootService.pokerGameService.nextPlayer()
     }
 
     /**
@@ -114,7 +114,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
 
         onAllRefreshables { refreshAfterSwapCard(false, false, handIndex, middleIndex) }
 
-        rootService.pokerGameService.nextPlayer()
+//        rootService.pokerGameService.nextPlayer()
     }
 
 
@@ -134,6 +134,6 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         if (!player.hasShifted) {
             throw IllegalStateException("You need to shift first!")
         }
-        rootService.pokerGameService.nextPlayer()
+//        rootService.pokerGameService.nextPlayer()
     }
 }

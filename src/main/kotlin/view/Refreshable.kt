@@ -1,5 +1,4 @@
 package view
-import entity.*
 import service.AbstractRefreshingService
 
 /**
@@ -20,7 +19,11 @@ interface Refreshable {
      */
     fun refreshAfterStartGame() {}
 
-    /**
+
+    fun refreshAfterStartRound(){}
+
+
+        /**
      * perform refreshes that are necessary after a player shifted the middle cards
      *
      * @param left a boolean value indicating the direction of the shift
@@ -37,19 +40,19 @@ interface Refreshable {
      */
     fun refreshAfterSwapCard(all: Boolean, pass: Boolean, handIndex: Int? = null, middleIndex: Int? = null) {}
 
+    fun refreshAfterMiddleCardSelected() {}
+
     /**
      * perform refreshes that are necessary after a player finished their turn
      *
-     * @param player the player that finished their turn
      */
 
-    fun refreshAfterNextPlayer(player: Player) {}
+    fun refreshAfterNextPlayer() {}
 
     /**
      * perform refreshes that are necessary after the last round was played
      *
-     * @param result a map of the scoreboard
      */
-    fun refreshAfterGameEnd(result: Map<Player,String>) {}
+    fun refreshAfterGameEnd() {}
 
 }

@@ -39,11 +39,14 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
             game.board.discardPileLeft = null
             game.board.discardPileRight = null
 
+            game.board.middleCards.clear()
+
             // chose the first player of the shuffled list to begin
             game.currentPlayer = 0
 
             // create a deck with 52 cards for the game
-            val cardDeck: ArrayDeque<Card> = game.board.cardDeck
+            val cardDeck: ArrayDeque<Card> = ArrayDeque(52)
+            game.board.cardDeck = cardDeck
 
             // add all cards (all possible combinations of suits and values) to the deck
             for (suit in CardSuit.values()) {
@@ -59,6 +62,8 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
 
             // hand out the three open and two hidden cards to each player
             for (player in game.players) {
+                player.openCards.clear()
+                player.hiddenCards.clear()
                 repeat(3) {
                     player.openCards.add(cardDeck.removeFirst())
                 }
@@ -88,30 +93,22 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
     fun nextPlayer() {
         // retrieve current game state
         val game = checkNotNull(rootService.currentGame)
+        val currentPlayerIndex = game.currentPlayer
+        val nextPlayerIndex = (currentPlayerIndex+1+game.players.size) % game.players.size
+        val nextPlayer = game.players[nextPlayerIndex]
 
-        // check if it was the last turn of the round
-        if (game.currentPlayer == game.players.size - 1) {
-            // check if there are rounds to be played left
-            if (game.rounds > 0) {
-                //set the first player to play the next turn
-                game.currentPlayer = 0
+        game.currentPlayer = nextPlayerIndex
+
+        if(nextPlayerIndex == 0) {
+            if(game.rounds == 0) {
+                endGame()
+            }
+            else {
                 game.rounds--
             }
-            else endGame()
-            onAllRefreshables { refreshAfterNextPlayer(game.players[game.currentPlayer]) }
         }
-        else {
-            // check if there are rounds to be played
-            if (game.rounds > 0) {
-                game.rounds--
-            }
-            // increase currentPlayer by 1 regardless of the number of rounds to be played
-            game.currentPlayer++
-        }
-        game.players[game.currentPlayer].hasShifted = false
-
-        if(game.currentPlayer > 0) onAllRefreshables { refreshAfterNextPlayer(game.players[game.currentPlayer-1]) }
-        else onAllRefreshables { refreshAfterNextPlayer(game.players[game.currentPlayer]) }
+        nextPlayer.hasShifted = false
+        onAllRefreshables { refreshAfterNextPlayer() }
     }
 
     /**
@@ -124,10 +121,7 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
         checkNotNull(rootService.currentGame) {"Game has not started yet or already ended"}
         // end game if it has not already
         calcResult()
-
-        onAllRefreshables { refreshAfterGameEnd(calcResult()) }
-
-        rootService.currentGame = null // Damit keine weiteren Spielzüge ausgeführt werden können
+        onAllRefreshables { refreshAfterGameEnd() }
     }
 
     /**
@@ -151,42 +145,6 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
         }
         return scoreboard
     }
-
-//    /**
-//     * This method sorts the scoreboard according to value of the respective hands of the players.
-//     * It uses the compareHands() method to do so.
-//     *
-//     * @param scoreboard the scoreboard to be sorted.
-//     */
-//    private fun sortScoreboard(scoreboard: Map<Player,String>): Map<Player,String> {
-//        return scoreboard.toList()
-//            .sortedBy { compareHands(it.second, scoreboard.values.maxOrNull()!!) }
-//            .toMap()
-//    }
-//
-//    /**
-//     * This method compares two hands with one another based on the "Poker" hand value. It uses
-//     * the abstract function indexOf() to determine the index of the "Poker" hand in a list contains
-//     * all "Poker" hands sorted by value. The lower the index, the higher the value of the hand.
-//     *
-//     * @param hand1 the first hand
-//     * @param hand2 the second hand to compare to the first hand
-//     *
-//     * @return the integer 1, if the first hand is more valuable, 0 if the hands are
-//     * equally valuable, and -1 if the second hand is more valuable
-//     */
-//    private fun compareHands(hand1: String, hand2: String): Int {
-//        val handRankings = listOf(
-//            "Royal Flush", "Straight Flush", "Four of a Kind", "Full House", "Flush",
-//            "Straight", "Three of a Kind", "Two Pair", "One Pair", "High Card"
-//        )
-//
-//        val rank1 = handRankings.indexOf(hand1)
-//        val rank2 = handRankings.indexOf(hand2)
-//
-//        return rank1.compareTo(rank2)
-//    }
-//
 
     /**
      * This method evaluates the hand of a player based on the rules of "Poker".
