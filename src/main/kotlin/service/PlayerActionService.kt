@@ -112,9 +112,7 @@ class PlayerActionService(private val rootService: RootService) : AbstractRefres
         player.openCards[handIndex] = game.board.middleCards[middleIndex]
         game.board.middleCards[middleIndex] = temp
 
-        onAllRefreshables { refreshAfterSwapCard(false, false, handIndex, middleIndex) }
-
-//        rootService.pokerGameService.nextPlayer()
+        onAllRefreshables { refreshAfterSwapCard(all = false, pass = false, handIndex, middleIndex) }
     }
 
 

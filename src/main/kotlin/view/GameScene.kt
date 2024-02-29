@@ -226,7 +226,7 @@ class GameScene(val rootService: RootService) :
         checkNotNull(game)
         if(game.rounds == 0) {
             rootService.pokerGameService.endGame()
-            refreshAfterGameEnd()
+            refreshAfterGameEnd(rootService.pokerGameService.calcResult())
         }
         else {
             gameComponents.refreshAfterNextPlayer()

@@ -1,6 +1,5 @@
 package service
 
-import entity.Board
 import entity.Player
 import view.Refreshable
 
@@ -40,19 +39,19 @@ class TestRefreshable: Refreshable {
         refreshAfterStartGameCalled = true
     }
 
-    override fun refreshAfterShiftCard(shiftingPlayer: Player, boardCards: Board) {
+    override fun refreshAfterShiftCard(left: Boolean) {
         refreshAfterShiftCardCalled = true
     }
 
-    override fun refreshAfterSwapCard(player: Player, boardCards: Board) {
+    override fun refreshAfterSwapCard(all: Boolean, pass: Boolean, handIndex: Int?, middleIndex: Int?) {
         refreshAfterSwapCardCalled = true
     }
 
-    override fun refreshAfterGameEnd(result: Map<Player,String>) {
+    override fun refreshAfterGameEnd(result: List<Pair<Player,String>>) {
         refreshAfterEndGameCalled = true
     }
 
-    override fun refreshAfterNextPlayer(player: Player) {
+    override fun refreshAfterNextPlayer() {
         refreshAfterNextPlayerCalled = true
     }
 

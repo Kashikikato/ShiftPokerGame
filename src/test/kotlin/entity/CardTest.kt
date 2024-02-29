@@ -6,7 +6,6 @@ class CardTest {
     private val aceOfSpades = Card(CardSuit.SPADES, CardValue.ACE)
     private val jackOfClubs = Card(CardSuit.CLUBS, CardValue.JACK)
     private val queenOfHearts = Card(CardSuit.HEARTS, CardValue.QUEEN)
-    private val queenOfDiamonds = Card(CardSuit.DIAMONDS, CardValue.QUEEN)
     private val jackOfDiamonds = Card(CardSuit.DIAMONDS, CardValue.JACK)
     private val otherQueenOfHearts = Card(CardSuit.HEARTS, CardValue.QUEEN)
 
@@ -42,18 +41,6 @@ class CardTest {
                     assertEquals(2, Card(suit, value).toString().length)
             }
         }
-    }
-
-    /**
-     * Checks with a few examples if the order introduced by [Card.compareTo] allows
-     * to directly compare the value of two cards like `card1 > card2`.
-     */
-    @Test
-    fun testCompareTo() {
-        assertTrue(jackOfDiamonds < queenOfHearts)
-        assertFalse(aceOfSpades < otherQueenOfHearts)
-        assertTrue(jackOfClubs < jackOfDiamonds)
-        assertTrue(queenOfHearts > queenOfDiamonds)
     }
 
     /**

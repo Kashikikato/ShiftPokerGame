@@ -1,6 +1,6 @@
 package view
 
-import service.RootService
+import entity.Player
 import tools.aqua.bgw.components.uicomponents.*
 import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.core.MenuScene
@@ -14,7 +14,7 @@ import java.awt.Color
  *
  * @constructor Creates a new instance of [LeaderboardScene].
  */
-class LeaderboardScene(private val rootService: RootService) : MenuScene(
+class LeaderboardScene() : MenuScene(
     600, 800, ColorVisual.LIGHT_GRAY
 ), Refreshable {
 
@@ -89,15 +89,9 @@ class LeaderboardScene(private val rootService: RootService) : MenuScene(
         isWrapText = true
     }
 
-    override fun refreshAfterGameEnd() {
-        val game = rootService.currentGame
-        checkNotNull(game)
-        rootService.pokerGameService.calcResult()
-//        val playerHandStrengthPairs = game.players.map { player ->
-//            val handStrength = rootService.pokerGameService.evaluateHand(player.openCards + player.hiddenCards)
-//            player to handStrength
-//        }
-        val playerHandStrengthPairs = rootService.pokerGameService.calcResult().sortedByDescending {
+    override fun refreshAfterGameEnd(result: List<Pair<Player, String>>) {
+        // sort result by hand strength
+        val playerHandStrengthPairs = result.sortedByDescending {
             (_, handStrength) ->
             when (handStrength) {
                 "Royal Flush" -> 10
@@ -114,6 +108,7 @@ class LeaderboardScene(private val rootService: RootService) : MenuScene(
             }
         }
 
+        //assign name labels by hand strength rankings
         playerHandStrengthPairs.forEachIndexed { index, (player, handStrength) ->
             val label = when (index) {
                 0 -> p1Label
@@ -132,6 +127,8 @@ class LeaderboardScene(private val rootService: RootService) : MenuScene(
                 }
             }
         }
+
+        // group strengths to display tie
         val sameRankPlayers = playerHandStrengthPairs.groupBy { it.second }.filter { it.value.size > 1 }
         if (sameRankPlayers.isNotEmpty()) {
             val sharedRank = sameRankPlayers.entries.first().key

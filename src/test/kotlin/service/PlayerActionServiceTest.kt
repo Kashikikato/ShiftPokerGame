@@ -96,6 +96,8 @@ class PlayerActionServiceTest {
         assertEquals(tempHandCard, board.middleCards[1])
         assertEquals(tempMiddleCard, player1.openCards[2])
 
+        mc.pokerGameService.nextPlayer()
+
         assertFails { mc.playerActionService.swapAll() }
 
         assertTrue(mc.currentGame!!.currentPlayer == 1)
@@ -112,6 +114,8 @@ class PlayerActionServiceTest {
 
         assertEquals(tempHand, middleCards)
         assertEquals(tempMiddle, openCards)
+
+        mc.pokerGameService.nextPlayer()
 
         assertFails { mc.playerActionService.pass() }
 

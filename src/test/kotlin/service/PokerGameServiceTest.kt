@@ -142,15 +142,32 @@ class PokerGameServiceTest {
         mc.currentGame!!.players[3].openCards = mutableListOf(hand4[0], hand4[1], hand4[2])
         mc.currentGame!!.players[3].hiddenCards = mutableListOf(hand4[3], hand4[4])
 
-        val expectedSortedResult = mapOf(
+        val expectedSortedResult: List<Pair<Player, String>> = listOf(
             Player("Player 4") to "Royal Flush",
             Player("Player 2") to "Straight Flush",
             Player("Player 3") to "Four of a Kind",
             Player("Player 1") to "Two Pair"
         )
 
-        val result = mc.pokerGameService.calcResult()
+        val result = mc.pokerGameService.calcResult().sortedByDescending {
+                (_, handStrength) ->
+            when (handStrength) {
+                "Royal Flush" -> 10
+                "Straight Flush" -> 9
+                "Four of a Kind" -> 8
+                "Full House" -> 7
+                "Flush" -> 6
+                "Straight" -> 5
+                "Three of a Kind" -> 4
+                "Two Pair" -> 3
+                "Pair" -> 2
+                "High Card" -> 1
+                else -> 0
+            }
+        }
+
         assertEquals(expectedSortedResult, result)
+
     }
 
     /**

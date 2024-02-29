@@ -1,4 +1,5 @@
 package view
+import entity.Player
 import service.AbstractRefreshingService
 
 /**
@@ -53,6 +54,6 @@ interface Refreshable {
      * perform refreshes that are necessary after the last round was played
      *
      */
-    fun refreshAfterGameEnd() {}
+    fun refreshAfterGameEnd(result: List<Pair<Player, String>>) {}
 
 }

@@ -121,7 +121,7 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
         checkNotNull(rootService.currentGame) {"Game has not started yet or already ended"}
         // end game if it has not already
         calcResult()
-        onAllRefreshables { refreshAfterGameEnd() }
+        onAllRefreshables { refreshAfterGameEnd(rootService.pokerGameService.calcResult()) }
     }
 
     /**

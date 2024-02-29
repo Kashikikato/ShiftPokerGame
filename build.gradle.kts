@@ -26,7 +26,7 @@ dependencies {
 
 tasks.distZip {
     archiveFileName.set("distribution.zip")
-    destinationDirectory.set(layout.projectDirectory.dir("/builds/sopra24A/einzelprojekte/gruppe-04-arian-behrami"))
+    destinationDirectory.set(layout.projectDirectory.dir("distributions"))
 }
 
 tasks.test {

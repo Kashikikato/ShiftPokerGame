@@ -1,5 +1,6 @@
 package view
 
+import entity.Player
 import service.RootService
 import tools.aqua.bgw.core.BoardGameApplication
 
@@ -26,7 +27,7 @@ class GameApplication : BoardGameApplication("Shift Poker"), Refreshable {
     }
 
     // This menu scene is shown after each finished game (i.e. no more cards to draw).
-    private val leaderboardScene = LeaderboardScene(rootService).apply {
+    private val leaderboardScene = LeaderboardScene().apply {
         newGameButton.onMouseClicked = {
             this@GameApplication.showMenuScene(StartMenuScene(rootService))
         }
@@ -55,7 +56,7 @@ class GameApplication : BoardGameApplication("Shift Poker"), Refreshable {
         this.hideMenuScene()
     }
 
-    override fun refreshAfterGameEnd() {
+    override fun refreshAfterGameEnd(result: List<Pair<Player, String>>) {
         this.showMenuScene(leaderboardScene)
     }
 }
