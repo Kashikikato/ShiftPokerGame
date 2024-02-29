@@ -1,6 +1,9 @@
 package entity
 import kotlin.test.*
 
+/**
+ * Unit tests for the [ShiftPokerGame] class.
+ */
 class ShiftPokerGameTest {
     //create game to test with
     private val game = ShiftPokerGame()

@@ -1,6 +1,9 @@
 package entity
 import kotlin.test.*
 
+/**
+ * Unit tests for the [Player] class.
+ */
 class PlayerTest {
     // create 2 players to test with
     private val player1 = Player("Player 1")

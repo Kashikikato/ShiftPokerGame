@@ -1,10 +1,8 @@
 package view
 
 import entity.Card
-import entity.Player
 import service.RootService
 import tools.aqua.bgw.components.gamecomponentviews.CardView
-import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.CompoundVisual
@@ -88,9 +86,6 @@ class GameScene(val rootService: RootService) :
     /**
      * Shows all card views in the list of initial card views.
      */
-    private fun List<InitialCardView>.show() {
-        this.forEach { it.isVisible = true }
-    }
 
     // Implementation of refresh methods
     override fun refreshAfterStartGame() {
@@ -122,28 +117,28 @@ class GameScene(val rootService: RootService) :
                 gameComponents.topNameLabel.isVisible = false
                 gameInitializer.topPlayerOpenCards.hide()
 
-                setupPlayerUI(game.players[nextPlayerIndex], gameComponents.rightNameLabel,
+                gameInitializer.setupPlayerUI(game.players[nextPlayerIndex], gameComponents.rightNameLabel,
                     gameInitializer.rightPlayerOpenCardsLeft,
                     gameInitializer.rightPlayerOpenCardsMiddle, gameInitializer.rightPlayerOpenCardsRight)
-                setupPlayerUI(game.players[afterNextPlayerIndex], gameComponents.leftNameLabel,
+                gameInitializer.setupPlayerUI(game.players[afterNextPlayerIndex], gameComponents.leftNameLabel,
                     gameInitializer.leftPlayerOpenCardsLeft,
                     gameInitializer.leftPlayerOpenCardsMiddle, gameInitializer.leftPlayerOpenCardsRight)
                     }
             4 -> {
-                setupPlayerUI(game.players[nextPlayerIndex], gameComponents.rightNameLabel,
+                gameInitializer.setupPlayerUI(game.players[nextPlayerIndex], gameComponents.rightNameLabel,
                     gameInitializer.rightPlayerOpenCardsLeft,
                     gameInitializer.rightPlayerOpenCardsMiddle, gameInitializer.rightPlayerOpenCardsRight)
-                setupPlayerUI(game.players[afterNextPlayerIndex], gameComponents.topNameLabel,
+                gameInitializer.setupPlayerUI(game.players[afterNextPlayerIndex], gameComponents.topNameLabel,
                     gameInitializer.topPlayerOpenCardsLeft,
                     gameInitializer.topPlayerOpenCardsMiddle, gameInitializer.topPlayerOpenCardsRight)
-                setupPlayerUI(game.players[lastPlayerIndex], gameComponents.leftNameLabel,
+                gameInitializer.setupPlayerUI(game.players[lastPlayerIndex], gameComponents.leftNameLabel,
                     gameInitializer.leftPlayerOpenCardsLeft,
                     gameInitializer.leftPlayerOpenCardsMiddle, gameInitializer.leftPlayerOpenCardsRight)
             }
             2 -> {
                 gameComponents.leftNameLabel.isVisible = false
                 gameComponents.rightNameLabel.isVisible = false
-                setupPlayerUI(game.players[nextPlayerIndex], gameComponents.topNameLabel,
+                gameInitializer.setupPlayerUI(game.players[nextPlayerIndex], gameComponents.topNameLabel,
                     gameInitializer.topPlayerOpenCardsLeft,
                     gameInitializer.topPlayerOpenCardsMiddle, gameInitializer.topPlayerOpenCardsRight)
                 gameInitializer.leftPlayerOpenCards.hide()
@@ -151,18 +146,6 @@ class GameScene(val rootService: RootService) :
             }
         }
         gameInitializer.initializeBoard(game, currentPlayer)
-    }
-
-    private fun setupPlayerUI(player: Player, nameLabel: Label, leftCardView: InitialCardView,
-        middleCardView: InitialCardView, rightCardView: InitialCardView) {
-            nameLabel.text = player.name
-            nameLabel.isVisible = true
-            val cardViews = listOf(leftCardView, middleCardView, rightCardView)
-            cardViews.show()
-            gameInitializer.initializeCardView(player.openCards[0], leftCardView)
-            gameInitializer.initializeCardView(player.openCards[1], middleCardView)
-            gameInitializer.initializeCardView(player.openCards[2], rightCardView)
-            moveCardViews(player.openCards, listOf(leftCardView, middleCardView, rightCardView))
     }
 
     override fun refreshAfterShiftCard(left: Boolean) {

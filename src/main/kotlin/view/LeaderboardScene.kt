@@ -89,31 +89,10 @@ class LeaderboardScene : MenuScene(
         isWrapText = true
     }
 
-    private fun sortResults(result: List<Pair<Player, String>>): List<Pair<Player, String>>  {
-        return result.sortedByDescending {
-                (_, handStrength) ->
-            when (handStrength) {
-                "Royal Flush" -> 10
-                "Straight Flush" -> 9
-                "Four of a Kind" -> 8
-                "Full House" -> 7
-                "Flush" -> 6
-                "Straight" -> 5
-                "Three of a Kind" -> 4
-                "Two Pair" -> 3
-                "Pair" -> 2
-                "High Card" -> 1
-                else -> 0
-            }
-        }
-    }
-
     override fun refreshAfterGameEnd(result: List<Pair<Player, String>>) {
-        // sort result by hand strength
-        val playerHandStrengthPairs = sortResults(result)
 
         //assign name labels by hand strength rankings
-        playerHandStrengthPairs.forEachIndexed { index, (player, handStrength) ->
+        result.forEachIndexed { index, (player, handStrength) ->
             val label = when (index) {
                 0 -> p1Label
                 1 -> p2Label
@@ -133,7 +112,7 @@ class LeaderboardScene : MenuScene(
         }
 
         // group strengths to display tie
-        val sameRankPlayers = playerHandStrengthPairs.groupBy { it.second }.filter { it.value.size > 1 }
+        val sameRankPlayers = result.groupBy { it.second }.filter { it.value.size > 1 }
         if (sameRankPlayers.isNotEmpty()) {
             val sharedRank = sameRankPlayers.entries.first().key
             val sharedRankPlayers = sameRankPlayers.entries.first().value.map { it.first.name }
@@ -141,7 +120,6 @@ class LeaderboardScene : MenuScene(
                 val sharedRankPlayersText = sharedRankPlayers.dropLast(1).joinToString(separator = ", ") +
                         if (sharedRankPlayers.size > 1) " & ${sharedRankPlayers.last()}" else sharedRankPlayers.last()
                 text = "It's a tie between $sharedRankPlayersText with a $sharedRank!"
-
             }
         }
     }

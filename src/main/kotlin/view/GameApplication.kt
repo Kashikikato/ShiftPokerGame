@@ -52,10 +52,12 @@ class GameApplication : BoardGameApplication("Shift Poker"), Refreshable {
         this.showMenuScene(startMenuScene, 0)
     }
 
+    // Hide the menu scene after starting the game
     override fun refreshAfterStartGame() {
         this.hideMenuScene()
     }
 
+    // Show the leaderboard scene after the game ends
     override fun refreshAfterGameEnd(result: List<Pair<Player, String>>) {
         this.showMenuScene(leaderboardScene)
     }

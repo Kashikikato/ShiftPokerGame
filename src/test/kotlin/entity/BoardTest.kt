@@ -1,6 +1,10 @@
 package entity
+
 import kotlin.test.*
 
+/**
+ * Unit tests for the [Board] class.
+ */
 class BoardTest {
     // create a board to test with
     private val board = Board()

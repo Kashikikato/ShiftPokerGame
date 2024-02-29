@@ -20,7 +20,9 @@ interface Refreshable {
      */
     fun refreshAfterStartGame() {}
 
-
+    /**
+     * perform refreshes that are necessary after a round started
+     */
     fun refreshAfterStartRound(){}
 
 
@@ -32,15 +34,15 @@ interface Refreshable {
     fun refreshAfterShiftCard(left: Boolean) {}
 
     /**
-     * perform refreshes that are necessary after a player swapped a card from their
-     * open cards with a card from the middle
-     *
-     * @param middleIndex the index of the middle card to be swapped
-     * @param handIndex the index of the hand card to be swapped
+     * perform refreshes that are necessary after a player swaps or chooses not to
      *
      */
     fun refreshAfterSwapCard(all: Boolean, pass: Boolean, handIndex: Int? = null, middleIndex: Int? = null) {}
 
+    /**
+     * perform refreshes that are necessary after a player selected a middle card for swapping
+     *
+     */
     fun refreshAfterMiddleCardSelected() {}
 
     /**
@@ -51,8 +53,10 @@ interface Refreshable {
     fun refreshAfterNextPlayer() {}
 
     /**
-     * perform refreshes that are necessary after the last round was played
+     * Refreshes the user interface after the end of the game with the provided results.
+     * @param result A list of pairs containing player objects and their corresponding game results as strings.
      *
+     * Each pair represents one player and their result in the game.
      */
     fun refreshAfterGameEnd(result: List<Pair<Player, String>>) {}
 

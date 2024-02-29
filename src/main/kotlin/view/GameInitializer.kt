@@ -5,6 +5,7 @@ import entity.Player
 import entity.ShiftPokerGame
 import service.CardImageLoader
 import tools.aqua.bgw.components.gamecomponentviews.CardView
+import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.util.BidirectionalMap
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.CompoundVisual
@@ -229,4 +230,30 @@ class GameInitializer(gameScene: GameScene) {
                 currentPlayerOpenCardsMiddle, currentPlayerOpenCardsRight))
         }
     }
+
+    private fun List<InitialCardView>.show() {
+        this.forEach { it.isVisible = true }
+    }
+
+    /**
+     * Sets up the UI components for displaying a player's information and cards.
+     *
+     * @param player The player whose information and cards will be displayed.
+     * @param nameLabel The label component for displaying the player's name.
+     * @param leftCardView The initial card view component for displaying the player's left card.
+     * @param middleCardView The initial card view component for displaying the player's middle card.
+     * @param rightCardView The initial card view component for displaying the player's right card.
+     */
+    fun setupPlayerUI(player: Player, nameLabel: Label, leftCardView: InitialCardView,
+                              middleCardView: InitialCardView, rightCardView: InitialCardView) {
+        nameLabel.text = player.name
+        nameLabel.isVisible = true
+        val cardViews = listOf(leftCardView, middleCardView, rightCardView)
+        cardViews.show()
+        initializeCardView(player.openCards[0], leftCardView)
+        initializeCardView(player.openCards[1], middleCardView)
+        initializeCardView(player.openCards[2], rightCardView)
+        moveCardViews(player.openCards, listOf(leftCardView, middleCardView, rightCardView))
+    }
+
 }

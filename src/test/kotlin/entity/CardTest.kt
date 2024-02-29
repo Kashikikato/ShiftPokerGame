@@ -1,6 +1,9 @@
 package entity
 import kotlin.test.*
 
+/**
+ * Unit tests for the [Card] class.
+ */
 class CardTest {
     // Some cards to perform the tests with
     private val aceOfSpades = Card(CardSuit.SPADES, CardValue.ACE)

@@ -4,10 +4,7 @@ import view.Refreshable
 import kotlin.test.*
 
 /**
- * Class that provides tests for [PokerGameService] and [PlayerActionService] (both at the same time,
- * as their functionality is not easily separable) by basically playing through some sample games.
- * [TestRefreshable] is used to validate correct refreshing behavior even though no GUI
- * is present.
+ * Unit tests for the [PlayerActionService] class.
  */
 
 class PlayerActionServiceTest {
