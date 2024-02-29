@@ -108,6 +108,9 @@ class GameScene(val rootService: RootService) :
         gameInitializer.moveCardViews(game.board.middleCards, gameInitializer.middleCardsViews)
         gameInitializer.moveCardView(gameInitializer.cardMap.forward(game.board.drawPile.first()),
             gameInitializer.drawPile1, hidden = true)
+        gameInitializer.moveCardViews(game.players[game.currentPlayer].hiddenCards,
+            gameInitializer.currentPlayerHiddenCards, hidden = true
+        )
     }
 
     override fun refreshAfterSwapCard(all: Boolean, pass: Boolean, handIndex: Int?, middleIndex: Int?) {
@@ -133,13 +136,15 @@ class GameScene(val rootService: RootService) :
                 ColorVisual(Color(255, 255, 255, 50)))
             card.isDisabled = true
         }
-
+        gameInitializer.moveCardViews(game.players[game.currentPlayer].hiddenCards,
+            gameInitializer.currentPlayerHiddenCards, hidden = true
+        )
     }
 
     override fun refreshAfterNextPlayer() {
         // Code to refresh the scene after moving to the next player
-            gameComponents.refreshAfterNextPlayer()
-            refreshAfterStartRound()
+        gameComponents.refreshAfterNextPlayer()
+        refreshAfterStartRound()
     }
 
     override fun refreshAfterMiddleCardSelected() {
