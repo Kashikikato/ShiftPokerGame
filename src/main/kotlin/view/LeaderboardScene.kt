@@ -14,7 +14,7 @@ import java.awt.Color
  *
  * @constructor Creates a new instance of [LeaderboardScene].
  */
-class LeaderboardScene() : MenuScene(
+class LeaderboardScene : MenuScene(
     600, 800, ColorVisual.LIGHT_GRAY
 ), Refreshable {
 
@@ -89,10 +89,9 @@ class LeaderboardScene() : MenuScene(
         isWrapText = true
     }
 
-    override fun refreshAfterGameEnd(result: List<Pair<Player, String>>) {
-        // sort result by hand strength
-        val playerHandStrengthPairs = result.sortedByDescending {
-            (_, handStrength) ->
+    private fun sortResults(result: List<Pair<Player, String>>): List<Pair<Player, String>>  {
+        return result.sortedByDescending {
+                (_, handStrength) ->
             when (handStrength) {
                 "Royal Flush" -> 10
                 "Straight Flush" -> 9
@@ -107,6 +106,11 @@ class LeaderboardScene() : MenuScene(
                 else -> 0
             }
         }
+    }
+
+    override fun refreshAfterGameEnd(result: List<Pair<Player, String>>) {
+        // sort result by hand strength
+        val playerHandStrengthPairs = sortResults(result)
 
         //assign name labels by hand strength rankings
         playerHandStrengthPairs.forEachIndexed { index, (player, handStrength) ->

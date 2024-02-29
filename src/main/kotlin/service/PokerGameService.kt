@@ -100,11 +100,9 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
         game.currentPlayer = nextPlayerIndex
 
         if(nextPlayerIndex == 0) {
+            game.rounds --
             if(game.rounds == 0) {
                 endGame()
-            }
-            else {
-                game.rounds--
             }
         }
         nextPlayer.hasShifted = false

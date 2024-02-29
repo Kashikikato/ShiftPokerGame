@@ -199,39 +199,18 @@ class GameScene(val rootService: RootService) :
         moveCardViews(currentPlayer.openCards, listOf(gameInitializer.currentPlayerOpenCardsLeft,
             gameInitializer.currentPlayerOpenCardsMiddle, gameInitializer.currentPlayerOpenCardsRight)
         )
-        gameComponents.startTurnButton.isVisible = true
         for(card in (gameInitializer.middleCardsViews + gameInitializer.currentPlayerOpenCards)) {
             card.visual = CompoundVisual(
                 ColorVisual(Color(255, 255, 255, 50)))
             card.isDisabled = true
-        }
-        gameComponents.selectACardLabel.apply {
-            width = 200.0
-            height = 30.0
-            posX = 870.0
-            posY = 665.0
-            text = "SELECT A MIDDLE CARD"
-            this.isVisible = false
-        }
-        gameComponents.selectedButton.apply {
-            isVisible = false
-            posX = 770.0
         }
 
     }
 
     override fun refreshAfterNextPlayer() {
         // Code to refresh the scene after moving to the next player
-        val game = rootService.currentGame
-        checkNotNull(game)
-        if(game.rounds == 0) {
-            rootService.pokerGameService.endGame()
-            refreshAfterGameEnd(rootService.pokerGameService.calcResult())
-        }
-        else {
             gameComponents.refreshAfterNextPlayer()
             refreshAfterStartRound()
-        }
     }
 
     override fun refreshAfterMiddleCardSelected() {

@@ -278,9 +278,28 @@ class GameComponents(private val rootService: RootService, private val gameScene
         passButton.disable()
         swapAllButton.disable()
 
+        swapOneButton.font = Font(color = Color.BLACK, size = 18, fontWeight = Font.FontWeight.BOLD)
+        swapAllButton.font = Font(color = Color.BLACK, size = 18, fontWeight = Font.FontWeight.BOLD)
+        passButton.font = Font(color = Color.BLACK, size = 18, fontWeight = Font.FontWeight.BOLD)
+
         selectACardLabel.isVisible = true
 
         gameScene.gameInitializer.middleCardsViews.forEach { it.isDisabled = false }
+
+        startTurnButton.isVisible = true
+
+        selectACardLabel.apply {
+            width = 200.0
+            height = 30.0
+            posX = 870.0
+            posY = 665.0
+            text = "SELECT A MIDDLE CARD"
+            this.isVisible = false
+        }
+        selectedButton.apply {
+            isVisible = false
+            posX = 770.0
+        }
     }
 
     /**

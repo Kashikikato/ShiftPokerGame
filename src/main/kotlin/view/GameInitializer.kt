@@ -27,6 +27,7 @@ class GameInitializer(gameScene: GameScene) {
                 ColorVisual(Color(255, 29, 29, 100))
             )
             gameScene.rootService.playerActionService.swap(0, selectedCardIndex)
+            selectedCardIndex = 0
         }
     }
     var currentPlayerOpenCardsMiddle = InitialCardView(posX = 905, posY = 800).apply {
@@ -36,6 +37,7 @@ class GameInitializer(gameScene: GameScene) {
                 ColorVisual(Color(255, 29, 29, 100))
             )
             gameScene.rootService.playerActionService.swap(1, selectedCardIndex)
+            selectedCardIndex = 0
         }
     }
     var currentPlayerOpenCardsRight = InitialCardView(posX = 1055, posY = 800).apply {
@@ -45,6 +47,7 @@ class GameInitializer(gameScene: GameScene) {
                 ColorVisual(Color(255, 29, 29, 100))
             )
             gameScene.rootService.playerActionService.swap(2, selectedCardIndex)
+            selectedCardIndex = 0
         }
     }
 
