@@ -109,7 +109,8 @@ class GameComponents(private val rootService: RootService, private val gameScene
             val game = rootService.currentGame
             checkNotNull(game)
             val hiddenCards = game.players[game.currentPlayer].hiddenCards
-            gameScene.moveCardViews(hiddenCards, gameScene.gameInitializer.currentPlayerHiddenCards, flip = true)
+            gameScene.gameInitializer.moveCardViews(hiddenCards,
+                gameScene.gameInitializer.currentPlayerHiddenCards, flip = true)
             visual = if (((visual as? ColorVisual)?.color?.red ?: 0) > 100) {
                 ColorVisual(96, 60, 30)
             } else ColorVisual(250, 90, 90)

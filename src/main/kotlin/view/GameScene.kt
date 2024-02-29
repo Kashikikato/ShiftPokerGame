@@ -1,8 +1,6 @@
 package view
 
-import entity.Card
 import service.RootService
-import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.visual.ColorVisual
 import tools.aqua.bgw.visual.CompoundVisual
@@ -22,59 +20,6 @@ class GameScene(val rootService: RootService) :
     // Initialize game components and initializer
     val gameComponents: GameComponents = GameComponents(rootService, this)
     val gameInitializer: GameInitializer = GameInitializer(this)
-
-    /**
-     * Moves a card view to a specified card stack.
-     *
-     * @param cardView The card view to move.
-     * @param card The card stack to move the card view to.
-     * @param flip Flag indicating whether to flip the card view.
-     * @param hidden Flag indicating whether the card should be hidden.
-     */
-    private fun moveCardView(
-        cardView: CardView,
-        card: InitialCardView,
-        flip: Boolean = false,
-        hidden: Boolean = false
-    ) {
-        if (flip) {
-            cardView.currentSide = when (cardView.currentSide) {
-                CardView.CardSide.BACK -> CardView.CardSide.FRONT
-                CardView.CardSide.FRONT -> CardView.CardSide.BACK
-            }
-        } else cardView.currentSide = CardView.CardSide.FRONT
-        if (hidden) {
-            cardView.currentSide = CardView.CardSide.BACK
-        }
-
-        cardView.removeFromParent()
-        card.add(cardView)
-    }
-
-    /**
-     * Moves multiple card views to specified card stacks.
-     *
-     * @param cards The list of cards to move.
-     * @param cardViews The list of card stacks to move the card views to.
-     * @param flip Flag indicating whether to flip the card views.
-     * @param hidden Flag indicating whether the cards should be hidden.
-     */
-    fun moveCardViews(
-        cards: List<Card>,
-        cardViews: List<InitialCardView>,
-        flip: Boolean = false,
-        hidden: Boolean = false
-    ) {
-        cards.forEachIndexed { index, card ->
-            val targetCardView = if (cardViews.size == 1) cardViews[0] else cardViews[index]
-            moveCardView(
-                gameInitializer.cardMap.forward(card),
-                targetCardView,
-                flip = flip,
-                hidden = hidden
-            )
-        }
-    }
 
     /**
      * Hides all card views in the list of initial card views.
@@ -156,12 +101,13 @@ class GameScene(val rootService: RootService) :
         gameComponents.refreshComponentsAfterShiftCard()
 
         val discardPile = if (left) game.board.discardPileLeft else game.board.discardPileRight
-        discardPile?.let { moveCardView(gameInitializer.cardMap.forward(it),
+        discardPile?.let { gameInitializer.moveCardView(gameInitializer.cardMap.forward(it),
             if (left) gameInitializer.discardPileLeft else gameInitializer.discardPileRight) }
 
         // Restliche Aktualisierungen der Kartenansichten
-        moveCardViews(game.board.middleCards, gameInitializer.middleCardsViews)
-        moveCardView(gameInitializer.cardMap.forward(game.board.drawPile.first()), gameInitializer.drawPile1)
+        gameInitializer.moveCardViews(game.board.middleCards, gameInitializer.middleCardsViews)
+        gameInitializer.moveCardView(gameInitializer.cardMap.forward(game.board.drawPile.first()),
+            gameInitializer.drawPile1, hidden = true)
     }
 
     override fun refreshAfterSwapCard(all: Boolean, pass: Boolean, handIndex: Int?, middleIndex: Int?) {
@@ -173,13 +119,13 @@ class GameScene(val rootService: RootService) :
         gameComponents.refreshAfterSwapCard()
 
         // Restliche Aktualisierungen der Kartenansichten
-        moveCardViews(game.board.middleCards, gameInitializer.middleCardsViews)
+        gameInitializer.moveCardViews(game.board.middleCards, gameInitializer.middleCardsViews)
 
         // Aktualisiere die offenen Karten der Spieler je nach aktuellem Spieler
         val currentPlayerIndex = game.currentPlayer
         val currentPlayer = game.players[currentPlayerIndex]
 
-        moveCardViews(currentPlayer.openCards, listOf(gameInitializer.currentPlayerOpenCardsLeft,
+        gameInitializer.moveCardViews(currentPlayer.openCards, listOf(gameInitializer.currentPlayerOpenCardsLeft,
             gameInitializer.currentPlayerOpenCardsMiddle, gameInitializer.currentPlayerOpenCardsRight)
         )
         for(card in (gameInitializer.middleCardsViews + gameInitializer.currentPlayerOpenCards)) {

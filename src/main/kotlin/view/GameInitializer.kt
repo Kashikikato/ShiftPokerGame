@@ -112,6 +112,9 @@ class GameInitializer(gameScene: GameScene) {
     val drawPile2 = InitialCardView(posX = 1565, posY = 802)
     val drawPile3 = InitialCardView(posX = 1580, posY = 802)
 
+    val drawPileViews: MutableList<InitialCardView> = mutableListOf(
+        drawPile1, drawPile2, drawPile3)
+
     var rightPlayerOpenCardsLeft = InitialCardView(posX = 1655, posY = 240, rotateRight = true)
     var rightPlayerOpenCardsMiddle = InitialCardView(posX = 1655, posY = 390, rotateRight = true)
     var rightPlayerOpenCardsRight = InitialCardView(posX = 1655, posY = 540, rotateRight = true)
@@ -142,7 +145,7 @@ class GameInitializer(gameScene: GameScene) {
      * @param card The card to initialize the view for.
      * @param singleCardView The initial card view for the card.
      */
-    fun initializeCardView(card: Card, singleCardView: InitialCardView) {
+    private fun initializeCardView(card: Card, singleCardView: InitialCardView) {
         val cardView = CardView(200, 130, front =  ImageVisual(
             cardImageLoader.frontImageFor(card.suit, card.value)),
             back = ImageVisual(cardImageLoader.backImage)
@@ -169,15 +172,10 @@ class GameInitializer(gameScene: GameScene) {
         game.board.middleCards.forEachIndexed { index, card ->
             initializeCardView(card, middleCardsViews[index])
         }
-        moveCardView(cardMap.forward(game.board.drawPile[1]),
-            drawPile2, hidden = true )
-        moveCardView(cardMap.forward(game.board.drawPile[2]),
-            drawPile3, hidden = true )
-        moveCardView(cardMap.forward(game.board.drawPile[0]), drawPile1 )
+        moveCardViews(listOf(game.board.drawPile[0],game.board.drawPile[1],
+            game.board.drawPile[2]), drawPileViews, hidden = true)
         drawPile2.toFront()
         drawPile1.toFront()
-
-
         moveCardViews(game.board.middleCards, middleCardsViews)
     }
 
@@ -185,7 +183,15 @@ class GameInitializer(gameScene: GameScene) {
         cardDeck.forEach { card -> initializeCardView(card, deckView) }
     }
 
-    private fun moveCardView(cardView: CardView, card: InitialCardView,
+    /**
+     * Moves a card view to a specified card stack.
+     *
+     * @param cardView The card view to move.
+     * @param card The card position to move the card view to.
+     * @param flip Flag indicating whether to flip the card view.
+     * @param hidden Flag indicating whether the card should be hidden.
+     */
+    fun moveCardView(cardView: CardView, card: InitialCardView,
                              flip: Boolean = false, hidden: Boolean = false) {
         if (flip) {
             cardView.currentSide = when (cardView.currentSide) {
@@ -201,7 +207,16 @@ class GameInitializer(gameScene: GameScene) {
         card.add(cardView)
     }
 
-    private fun moveCardViews(cards: List<Card>, cardViews: List<InitialCardView>,
+    /**
+     * Moves multiple card views to a specified card stack.
+     *
+     * @param cards The cards to move.
+     * @param cardViews The card positions to move the card view to.
+     * @param flip Flag indicating whether to flip the card view.
+     * @param hidden Flag indicating whether the card should be hidden.
+     */
+
+    fun moveCardViews(cards: List<Card>, cardViews: List<InitialCardView>,
                               flip: Boolean = false, hidden: Boolean = false) {
         cards.forEachIndexed { index, card ->
             if(cardViews.size == 1) moveCardView(cardMap.forward(card),
