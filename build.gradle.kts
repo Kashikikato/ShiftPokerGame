@@ -26,7 +26,7 @@ dependencies {
 
 tasks.distZip {
     archiveFileName.set("distribution.zip")
-    destinationDirectory.set(layout.projectDirectory.dir("public"))
+    destinationDirectory.set(layout.projectDirectory.dir("build/distributions"))
 }
 
 tasks.test {
