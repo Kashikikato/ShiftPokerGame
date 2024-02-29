@@ -2,43 +2,59 @@ package view
 
 import service.RootService
 import tools.aqua.bgw.components.uicomponents.*
+import tools.aqua.bgw.core.Alignment
 import tools.aqua.bgw.core.MenuScene
 import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import java.awt.Color
 
+/**
+ * The [StartMenuScene] class represents the start menu scene of the Shift Poker game.
+ * This scene allows players to configure the game settings such as the number of rounds and the number of players.
+ * Players can enter their names and start the game.
+ *
+ * @property rootService The root service instance.
+ * @constructor Creates a new instance of [StartMenuScene].
+ * @param rootService The root service instance.
+ */
 class StartMenuScene(private val rootService: RootService): MenuScene(
     600, 800, ColorVisual.LIGHT_GRAY), Refreshable {
 
+    //default settings
+    private var rounds = 2
+    private var numPlayers = 2
+
+    // Label for the headline
     private val headlineLabel = Label(
         width = 550, height = 50, posX = 30, posY = 50,
         text = "WELCOME TO SHIFT POKER!",
         font = Font(size = 32, color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     )
 
+    // Label for displaying the number of rounds
     private val roundLabel = Label(
         width = 80, height = 35,
-        posX = 160, posY = 125,
+        posX = 150, posY = 125,
         text = "ROUNDS: ",
-        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
-
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD),
+        alignment = Alignment.CENTER_LEFT
     )
-    private var rounds = 2
-    private var numPlayers = 2
 
+    // Combo box for selecting the number of rounds
     private val roundList: ComboBox<Int> = ComboBox(
         width = 50, height = 25,
         posX = 250, posY = 130,
         items = listOf(2, 3, 4, 5, 6, 7)
-        ).apply {
-            selectedItemProperty.addListener{ _, newValue ->
-                if(newValue != null) {
-                    onRoundsSelected(newValue)
-                    rounds = newValue
-                }
+    ).apply {
+        selectedItemProperty.addListener{ _, newValue ->
+            if(newValue != null) {
+                onRoundsSelected(newValue)
+                rounds = newValue
+            }
         }
     }
 
+    // Label for displaying the selected number of rounds
     private val numRoundsLabel = Label(
         width = 30, height = 25,
         posX = 250, posY = 130,
@@ -46,10 +62,51 @@ class StartMenuScene(private val rootService: RootService): MenuScene(
         font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
     )
 
+    /**
+     * Handles the selection of the number of rounds.
+     *
+     * @param rounds The selected number of rounds.
+     */
     private fun onRoundsSelected(rounds: Int) {
         numRoundsLabel.text = "$rounds"
     }
 
+    // Label for displaying the number of players
+    private val playersLabel = Label(
+        width = 80, height = 35,
+        posX = 150, posY = 175,
+        text = "PLAYERS:",
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD),
+        alignment = Alignment.CENTER_LEFT
+    )
+
+    // Combo box for selecting the number of players
+    private val numPlayersInput: ComboBox<Int> = ComboBox(
+        width = 50, height = 25,
+        posX = 250, posY = 180,
+        items = listOf(2,3,4),
+    ).apply {
+        selectedItemProperty.addListener { _, newValue ->
+            if (newValue != null) {
+                onNumberPlayersSelected(newValue)
+                numPlayers = newValue
+            }
+        }
+    }
+
+    // Label for displaying the selected number of players
+    private val numPlayersLabel = Label(
+        width = 30, height = 25,
+        posX = 250, posY = 180,
+        text = numPlayers.toString(),
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
+    )
+
+    /**
+     * Handles the selection of the number of players.
+     *
+     * @param numPlayers The selected number of players.
+     */
     private fun onNumberPlayersSelected(numPlayers: Int) {
         numPlayersLabel.text = "$numPlayers"
         when (numPlayers) {
@@ -80,39 +137,13 @@ class StartMenuScene(private val rootService: RootService): MenuScene(
         }
     }
 
-    private val playersLabel = Label(
-        width = 80, height = 35,
-        posX = 158, posY = 175,
-        text = "PLAYERS:",
-        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
-    )
-
-    private val numPlayersInput: ComboBox<Int> = ComboBox(
-        width = 50, height = 25,
-        posX = 250, posY = 180,
-        items = listOf(2,3,4),
-    ).apply {
-        selectedItemProperty.addListener { _, newValue ->
-            if (newValue != null) {
-                onNumberPlayersSelected(newValue)
-                numPlayers = newValue
-            }
-        }
-    }
-
-
-    private val numPlayersLabel = Label(
-        width = 30, height = 25,
-        posX = 250, posY = 180,
-        text = numPlayers.toString(),
-        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
-    )
-
+    // Label and input field for Player 1
     private val p1Label = Label(
         width = 100, height = 35,
         posX = 150, posY = 225,
         text = "PLAYER 1:",
-        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD),
+        alignment = Alignment.CENTER_LEFT
     )
     private val p1Input: TextField = TextField(
         width = 200, height = 35,
@@ -124,11 +155,13 @@ class StartMenuScene(private val rootService: RootService): MenuScene(
         }
     }
 
+    // Label and input field for Player 2
     private val p2Label = Label(
         width = 100, height = 35,
         posX = 150, posY = 275,
         text = "PLAYER 2:",
-        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD),
+        alignment = Alignment.CENTER_LEFT
     )
 
     private val p2Input: TextField = TextField(
@@ -141,11 +174,13 @@ class StartMenuScene(private val rootService: RootService): MenuScene(
         }
     }
 
+    // Label and input field for Player 3
     private val p3Label = Label(
         width = 100, height = 35,
         posX = 150, posY = 325,
         text = "PLAYER 3:",
-        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD),
+        alignment = Alignment.CENTER_LEFT
     ).apply { this.isVisible = false }
 
     private val p3Input: TextField = TextField(
@@ -159,11 +194,13 @@ class StartMenuScene(private val rootService: RootService): MenuScene(
         }
     }
 
+    // Label and input field for Player 4
     private val p4Label = Label(
         width = 100, height = 35,
         posX = 150, posY = 375,
         text = "PLAYER 4:",
-        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD)
+        font = Font(color = Color.WHITE, family = "Monospace", fontWeight = Font.FontWeight.BOLD),
+        alignment = Alignment.CENTER_LEFT
     ).apply { this.isVisible = false }
 
     private val p4Input: TextField = TextField(
@@ -177,6 +214,7 @@ class StartMenuScene(private val rootService: RootService): MenuScene(
         }
     }
 
+    // Button for quitting the game
     val quitButton = Button(
         width = 140, height = 35,
         posX = 150, posY = 325,
@@ -186,6 +224,7 @@ class StartMenuScene(private val rootService: RootService): MenuScene(
         visual = ColorVisual(150, 50, 50)
     }
 
+    // Button for starting the game
     private val startButton = Button(
         width = 140, height = 35,
         posX = 310, posY = 325,
@@ -209,6 +248,9 @@ class StartMenuScene(private val rootService: RootService): MenuScene(
         }
     }
 
+    /**
+     * Initializes the start menu scene by adding components and setting up event handlers.
+     */
     init {
         background = ColorVisual(50, 70, 50) // Dark green for "Casino table" flair
         opacity = .9

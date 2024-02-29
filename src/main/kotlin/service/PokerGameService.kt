@@ -131,18 +131,20 @@ class PokerGameService(private val rootService: RootService): AbstractRefreshing
      *
      * @throws IllegalStateException if [ShiftPokerGame] has not started yet or already ended.
      */
-    fun calcResult(): Map<Player,String> {
+    fun calcResult(): List<Pair<Player, String>> {
         val game = checkNotNull(rootService.currentGame)
-        val scoreboard = mutableMapOf<Player, String>()
+        val scoreboard = game.players.map{ player ->
+            player to evaluateHand(player.openCards + player.hiddenCards)}.toMutableList()
 
-        for (player in game.players) {
-            val hand = player.hiddenCards + player.openCards
 
-            // evaluate hand based on rules of poker (simplified)
-            val pokerHand = evaluateHand(hand)
-
-            scoreboard[player] = pokerHand
-        }
+//        for (player in game.players) {
+//            val hand = player.hiddenCards + player.openCards
+//
+//            // evaluate hand based on rules of poker (simplified)
+//            val pokerHand = evaluateHand(hand)
+//
+//            scoreboard[player] = pokerHand
+//        }
         return scoreboard
     }
 

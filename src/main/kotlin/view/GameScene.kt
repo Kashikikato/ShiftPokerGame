@@ -2,44 +2,50 @@ package view
 
 import entity.Card
 import entity.Player
-import entity.ShiftPokerGame
 import service.RootService
 import tools.aqua.bgw.components.gamecomponentviews.CardView
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.BoardGameScene
 import tools.aqua.bgw.visual.ColorVisual
-import tools.aqua.bgw.visual.ImageVisual
 import tools.aqua.bgw.visual.CompoundVisual
 import java.awt.Color
 
 
-class GameScene(val rootService: RootService)
-    : BoardGameScene(1920, 1080), Refreshable {
-    val game = rootService.currentGame
+/**
+ * The [GameScene] class represents the scene where the poker game is played.
+ * It displays the game board and controls for players to interact with during the game.
+ *
+ * @property rootService The root service for accessing game-related functionalities.
+ * @constructor Creates a new instance of [GameScene] with the specified [rootService].
+ */
+class GameScene(val rootService: RootService) :
+    BoardGameScene(1920, 1080), Refreshable {
+
+    // Initialize game components and initializer
     val gameComponents: GameComponents = GameComponents(rootService, this)
     val gameInitializer: GameInitializer = GameInitializer(this)
 
-    private fun initializePileView(cardDeck: List<Card>, deckView: InitialCardView) {
-        cardDeck.forEach { card -> initializeCardView(card, deckView) }
-    }
-
-    private fun initializeCardView(card: Card, singleCardView: InitialCardView) {
-        val cardView = CardView(200, 130, front =  ImageVisual(
-            gameInitializer.cardImageLoader.frontImageFor(card.suit, card.value)),
-            back = ImageVisual(gameInitializer.cardImageLoader.backImage))
-        singleCardView.add(cardView)
-        gameInitializer.cardMap.add(card, cardView)
-    }
-
-    private fun moveCardView(cardView: CardView, card: InitialCardView,
-        flip: Boolean = false, hidden: Boolean = false) {
+    /**
+     * Moves a card view to a specified card stack.
+     *
+     * @param cardView The card view to move.
+     * @param card The card stack to move the card view to.
+     * @param flip Flag indicating whether to flip the card view.
+     * @param hidden Flag indicating whether the card should be hidden.
+     */
+    private fun moveCardView(
+        cardView: CardView,
+        card: InitialCardView,
+        flip: Boolean = false,
+        hidden: Boolean = false
+    ) {
         if (flip) {
             cardView.currentSide = when (cardView.currentSide) {
                 CardView.CardSide.BACK -> CardView.CardSide.FRONT
                 CardView.CardSide.FRONT -> CardView.CardSide.BACK
             }
         } else cardView.currentSide = CardView.CardSide.FRONT
-        if(hidden) {
+        if (hidden) {
             cardView.currentSide = CardView.CardSide.BACK
         }
 
@@ -47,34 +53,57 @@ class GameScene(val rootService: RootService)
         card.add(cardView)
     }
 
-    fun moveCardViews(cards: List<Card>, cardViews: List<InitialCardView>,
-        flip: Boolean = false, hidden: Boolean = false) {
+    /**
+     * Moves multiple card views to specified card stacks.
+     *
+     * @param cards The list of cards to move.
+     * @param cardViews The list of card stacks to move the card views to.
+     * @param flip Flag indicating whether to flip the card views.
+     * @param hidden Flag indicating whether the cards should be hidden.
+     */
+    fun moveCardViews(
+        cards: List<Card>,
+        cardViews: List<InitialCardView>,
+        flip: Boolean = false,
+        hidden: Boolean = false
+    ) {
         cards.forEachIndexed { index, card ->
-            if(cardViews.size == 1) moveCardView(gameInitializer.cardMap.forward(card),
-                cardViews[0], flip = flip, hidden = hidden)
-            else moveCardView(gameInitializer.cardMap.forward(card), cardViews[index], flip = flip, hidden = hidden)
+            val targetCardView = if (cardViews.size == 1) cardViews[0] else cardViews[index]
+            moveCardView(
+                gameInitializer.cardMap.forward(card),
+                targetCardView,
+                flip = flip,
+                hidden = hidden
+            )
         }
     }
 
+    /**
+     * Hides all card views in the list of initial card views.
+     */
     private fun List<InitialCardView>.hide() {
-        for(cardView in this){
-            cardView.isVisible = false
-        }
+        this.forEach { it.isVisible = false }
     }
 
+    /**
+     * Shows all card views in the list of initial card views.
+     */
     private fun List<InitialCardView>.show() {
-        for(cardView in this){
-            cardView.isVisible = true
-        }
+        this.forEach { it.isVisible = true }
     }
 
+    // Implementation of refresh methods
     override fun refreshAfterStartGame() {
+        // Clear existing game data
         gameInitializer.cardMap.clear()
         gameInitializer.discardPileLeft.clear()
         gameInitializer.discardPileRight.clear()
+        // Refresh after starting the game
         refreshAfterStartRound()
     }
+
     override fun refreshAfterStartRound(){
+        // Code to refresh the scene after starting a new round
         val game = rootService.currentGame ?: throw IllegalStateException("No started game found.")
         GameData.middleCards = game.board.middleCards
         val size = game.players.size
@@ -121,27 +150,8 @@ class GameScene(val rootService: RootService)
                 gameInitializer.rightPlayerOpenCards.hide()
             }
         }
-        initializeBoard(game, currentPlayer)
+        gameInitializer.initializeBoard(game, currentPlayer)
     }
-
-    private fun initializeBoard(game: ShiftPokerGame, currentPlayer: Player) {
-
-        initializePileView(game.board.drawPile, gameInitializer.drawPile)
-
-        initializePlayerUI(currentPlayer, gameInitializer.currentPlayerOpenCardsLeft,
-            gameInitializer.currentPlayerOpenCardsMiddle, gameInitializer.currentPlayerOpenCardsRight)
-        initializePlayerUI(currentPlayer, gameInitializer.currentPlayerHiddenCardLeft,
-            gameInitializer.currentPlayerHiddenCardRight, null)
-
-        game.board.middleCards.forEachIndexed { index, card ->
-            initializeCardView(card, gameInitializer.middleCardsViews[index])
-        }
-
-        moveCardView(gameInitializer.cardMap.forward(game.board.drawPile.first()), gameInitializer.drawPile)
-        moveCardViews(game.board.middleCards, gameInitializer.middleCardsViews)
-    }
-
-
 
     private fun setupPlayerUI(player: Player, nameLabel: Label, leftCardView: InitialCardView,
         middleCardView: InitialCardView, rightCardView: InitialCardView) {
@@ -149,34 +159,14 @@ class GameScene(val rootService: RootService)
             nameLabel.isVisible = true
             val cardViews = listOf(leftCardView, middleCardView, rightCardView)
             cardViews.show()
-            initializeCardView(player.openCards[0], leftCardView)
-            initializeCardView(player.openCards[1], middleCardView)
-            initializeCardView(player.openCards[2], rightCardView)
+            gameInitializer.initializeCardView(player.openCards[0], leftCardView)
+            gameInitializer.initializeCardView(player.openCards[1], middleCardView)
+            gameInitializer.initializeCardView(player.openCards[2], rightCardView)
             moveCardViews(player.openCards, listOf(leftCardView, middleCardView, rightCardView))
     }
 
-    private fun initializePlayerUI(player: Player, leftCardView: InitialCardView,
-       rightCardView: InitialCardView, middleCardView: InitialCardView?) {
-        if(middleCardView == null) {
-            initializeCardView(player.hiddenCards[0], leftCardView)
-            initializeCardView(
-                player.hiddenCards[1], rightCardView
-            )
-            moveCardViews(
-                player.hiddenCards,
-                gameInitializer.currentPlayerHiddenCards, hidden = true
-            )
-        }
-         else {
-            initializeCardView(player.openCards[0], leftCardView)
-             initializeCardView(player.openCards[1], middleCardView)
-               initializeCardView(player.openCards[2], rightCardView)
-            moveCardViews(player.openCards, listOf(gameInitializer.currentPlayerOpenCardsLeft,
-                gameInitializer.currentPlayerOpenCardsMiddle, gameInitializer.currentPlayerOpenCardsRight))
-           }
-    }
-
     override fun refreshAfterShiftCard(left: Boolean) {
+        // Code to refresh the scene after shifting a card
         val game = rootService.currentGame
         checkNotNull(game)
 
@@ -188,10 +178,11 @@ class GameScene(val rootService: RootService)
 
         // Restliche Aktualisierungen der Kartenansichten
         moveCardViews(game.board.middleCards, gameInitializer.middleCardsViews)
-        moveCardView(gameInitializer.cardMap.forward(game.board.drawPile.first()), gameInitializer.drawPile)
+        moveCardView(gameInitializer.cardMap.forward(game.board.drawPile.first()), gameInitializer.drawPile1)
     }
 
     override fun refreshAfterSwapCard(all: Boolean, pass: Boolean, handIndex: Int?, middleIndex: Int?) {
+        // Code to refresh the scene after swapping cards
         val game = rootService.currentGame
         checkNotNull(game)
 
@@ -230,6 +221,7 @@ class GameScene(val rootService: RootService)
     }
 
     override fun refreshAfterNextPlayer() {
+        // Code to refresh the scene after moving to the next player
         val game = rootService.currentGame
         checkNotNull(game)
         if(game.rounds == 0) {
@@ -243,6 +235,7 @@ class GameScene(val rootService: RootService)
     }
 
     override fun refreshAfterMiddleCardSelected() {
+        // Code to refresh the scene after selecting a middle card
         for(card in gameInitializer.middleCardsViews + gameInitializer.currentPlayerOpenCards) {
             card.isDisabled = card in gameInitializer.middleCardsViews
         }
@@ -265,11 +258,12 @@ class GameScene(val rootService: RootService)
         }
     }
 
-
     init{
+        // Initialize scene components
         background = ColorVisual(108, 168, 59) // Dark green for "Casino table" flair
         opacity = .5
         addComponents(
+            // Add all game components to the scene
             gameComponents.roundLabel, gameComponents.bottomNameLabel, gameComponents.rightNameLabel,
             gameComponents.topNameLabel, gameComponents.leftNameLabel, gameInitializer.currentPlayerHiddenCardLeft,
             gameInitializer.currentPlayerHiddenCardRight,
@@ -280,7 +274,8 @@ class GameScene(val rootService: RootService)
             gameInitializer.topPlayerOpenCardsLeft, gameInitializer.topPlayerOpenCardsRight,
             gameInitializer.topPlayerOpenCardsMiddle, gameInitializer.leftPlayerOpenCardsLeft,
             gameInitializer.leftPlayerOpenCardsRight,gameInitializer.leftPlayerOpenCardsMiddle,
-            gameInitializer.drawPile, gameComponents.showCardsButton, gameInitializer.middleCardLeft,
+            gameInitializer.drawPile1, gameInitializer.drawPile2, gameInitializer.drawPile3,
+            gameComponents.showCardsButton, gameInitializer.middleCardLeft,
             gameInitializer.middleCardMiddle, gameInitializer.middleCardRight, gameComponents.shiftLeftButton,
             gameComponents.shiftRightButton,gameComponents.swapOneButton, gameComponents.swapAllButton,
             gameComponents.passButton, gameComponents.nextPlayerLabel, gameComponents.startTurnButton,
