@@ -172,6 +172,8 @@ class GameComponents(private val rootService: RootService, private val gameScene
         onMouseClicked = {
             visual = ColorVisual(250, 90, 90)
             refreshAfterSwapCard()
+            startTurnButton.isVisible = false
+            selectACardLabel.isVisible = true
         }
     }
 
@@ -265,6 +267,7 @@ class GameComponents(private val rootService: RootService, private val gameScene
 
         shiftLeftButton.font = Font(color = Color.BLACK, size = 18, fontWeight = Font.FontWeight.BOLD)
         shiftRightButton.font = Font(color = Color.BLACK, size = 18, fontWeight = Font.FontWeight.BOLD)
+
     }
 
     /**
@@ -282,8 +285,6 @@ class GameComponents(private val rootService: RootService, private val gameScene
         swapOneButton.font = Font(color = Color.BLACK, size = 18, fontWeight = Font.FontWeight.BOLD)
         swapAllButton.font = Font(color = Color.BLACK, size = 18, fontWeight = Font.FontWeight.BOLD)
         passButton.font = Font(color = Color.BLACK, size = 18, fontWeight = Font.FontWeight.BOLD)
-
-        selectACardLabel.isVisible = true
 
         gameScene.gameInitializer.middleCardsViews.forEach { it.isDisabled = false }
 
