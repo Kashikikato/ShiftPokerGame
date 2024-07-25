@@ -1,3 +1,3 @@
 # ShiftPoker
 
-A simple card game I had to create for Uni.
+A simple card game I created for Uni.
