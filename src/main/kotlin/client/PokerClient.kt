@@ -1,17 +1,17 @@
 package client
 
-import io.ktor.client.*
-import io.ktor.client.features.websocket.*
+//import io.ktor.client.*
+//import io.ktor.client.features.websocket.*
 //import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.http.cio.websocket.*
+//import io.ktor.http.*
+//import io.ktor.http.cio.websocket.*
 //import kotlinx.coroutines.*
 
 
 /**
  * client
  */
-suspend fun startClient() {
+fun startClient() {
 //    val client = HttpClient {
 //        install(WebSockets)
 //    }
