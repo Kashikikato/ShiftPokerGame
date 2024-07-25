@@ -1,3 +1,5 @@
+A simple card game I had to create for Uni.
+
 # SoPra Projekt 1 (Einzelprojekt)
 
 ## Wichtige Links
