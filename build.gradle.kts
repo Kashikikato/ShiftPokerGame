@@ -21,6 +21,16 @@ application {
 
 dependencies {
     testImplementation(kotlin("test-junit5"))
+
+    // Ktor server dependencies
+//    implementation("io.ktor:ktor-server-core:1.5.4")
+//    implementation("io.ktor:ktor-server-netty:1.5.4")
+//    implementation("io.ktor:ktor-websockets:1.5.4")
+//    implementation("io.ktor:ktor-client-core:1.5.4")
+//    implementation("io.ktor:ktor-client-cio:1.5.4")
+//    implementation("io.ktor:ktor-client-websockets:1.5.4")
+//    implementation("org.slf4j:slf4j-simple:1.7.30")
+    testImplementation(kotlin("test-junit5"))
     implementation(group = "tools.aqua", name = "bgw-gui", version = "0.9")
 }
 
@@ -56,20 +66,14 @@ tasks.jacocoTestReport {
 }
 
 detekt {
-    // Version of Detekt that will be used. When unspecified the latest detekt
-    // version found will be used. Override to stay on the same version.
     toolVersion = "1.18.0-RC3"
-
-    //source.setFrom()
     config = files("detektConfig.yml")
 
     reports {
-        // Enable/Disable HTML report (default: true)
         html {
             enabled = true
             reportsDir = file("public/detekt")
         }
-
         sarif {
             enabled = false
         }
