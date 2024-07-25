@@ -1,7 +1,7 @@
-import server.startServer
-import client.startClient
+//import server.startServer
+//import client.startClient
 import view.GameApplication
-import kotlinx.coroutines.*
+//import kotlinx.coroutines.*
 
 /**
  * Main Function
